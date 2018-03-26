@@ -6,7 +6,7 @@ package com.company;
 // The use of static imports is something that should be used carefully.
 // I have only ever used this technique for the project wide constants.
 //
-        import static com.company.ProjConstants.*;
+import static com.company.ProjConstants.*;
 
 public class StDeviation {
 
@@ -87,9 +87,12 @@ public class StDeviation {
     public void setMin(int userMin) {
 
 
+
+
     }
 
-    public void getMin(int userMin) {
+    public int getMin() {
+
 
     }
 
@@ -98,7 +101,7 @@ public class StDeviation {
 
     }
 
-    public void getMax(int userMax) {
+    public int getMax() {
 
 
     }
@@ -130,8 +133,27 @@ public class StDeviation {
             sdItems = 0;
         }
 
-        Data[sdItems] = dataItem;
-        sdItems++;
+        switch (getCalcMethod()){
+
+            case DISCRETE: {
+                Data[sdItems] = dataItem;
+                sdItems++;
+            }
+
+            case FRQTABLE: {
+                if ((getMin()!= INVALID_RANGE) && (getMax()!= INVALID_RANGE)) {
+
+                    if ((dataItem < getMin())||(dataItem > getMax())){
+                        System.out.printf("ERROR: RANGE VIOLATION- Data Value (5.0%), User Values : Minimum (5.0%f), Maximum (5.0%f)",
+                                dataItem, (double) getMin(), (double) getMax());
+
+
+                    }
+                }
+            }
+        }
+
+
 
     }
 
@@ -213,18 +235,39 @@ public class StDeviation {
 
         // Checks that data entry, and average have been done
         //
-        if ((sdItems != INVALID) || (sdAve != INVALID)|| (calcMethod != INVALID)){
+        if ((sdItems != INVALID) || (sdAve != INVALID)) {
 
-          switch(calcMethod){
-              case DISCRETE:
-                  for (int i = 0; i < sdItems; i++) {
-                      difference = (Data[i] - sdAve);
-                      diffSquared = Math.pow(difference, 2);
-                      total = total + diffSquared;
-                  }
-                  break;
-              case
+            switch (getCalcMethod()) {
+                case DISCRETE: {
+                    for (int i = 0; i < sdItems; i++) {
+                        difference = (Data[i] - sdAve);
+                        diffSquared = Math.pow(difference, 2);
+                        total = total + diffSquared;
+                    }
+                    break;
+                }
 
+                case FRQTABLE: {
+                    break;
+                }
+
+                case GROUPED: {
+                    break;
+                }
+
+                case default: {
+                    System.out.printf("INVALID CALC METHOD, variance can not be obtained");
+                    break;
+                }
+
+
+            }
+        }
+        else {
+
+            System.out.printf("INVALID ... ");
+        }
+        /*
 
             // Loop over all data and calculate variance
             //
@@ -243,11 +286,12 @@ public class StDeviation {
             sdVar = total / (double) sdItems;
 
         }
-        else {
+//        else {
             // Pre-Conditions have not been met
             sdVar = INVALID;
         }
 
+*/
         return sdVar;
     }
 
