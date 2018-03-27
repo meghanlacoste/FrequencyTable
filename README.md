@@ -92,8 +92,9 @@ public class StDeviation {
     }
 
     public int getMin() {
-
-
+    
+    return userMin;
+ 
     }
 
     public void setMax(int userMax) {
@@ -102,7 +103,8 @@ public class StDeviation {
     }
 
     public int getMax() {
-
+ 
+    return userMax;
 
     }
 
@@ -123,7 +125,7 @@ public class StDeviation {
     //      Pre-Conditions:
     //          - none
     //
-    public void addNewDataItem(int dataItem) {
+     public void addNewDataItem(int dataItem) {
 
         // In this case we have to check if we are adding the first data item.
         // If sdItems = -1 then no data has been previously added so we set
@@ -136,22 +138,48 @@ public class StDeviation {
         switch (getCalcMethod()){
 
             case DISCRETE: {
+
                 Data[sdItems] = dataItem;
                 sdItems++;
+                break;
             }
 
             case FRQTABLE: {
-                if ((getMin()!= INVALID_RANGE) && (getMax()!= INVALID_RANGE)) {
 
-                    if ((dataItem < getMin())||(dataItem > getMax())){
-                        System.out.printf("ERROR: RANGE VIOLATION- Data Value (5.0%), User Values : Minimum (5.0%f), Maximum (5.0%f)",
+                if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)){
+
+                    if ((dataItem < getMin()) || (dataItem > getMax())){
+
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value (%5.0f), User Values: Minimum (%5.0f)",
                                 dataItem, (double) getMin(), (double) getMax());
 
+                    } else if ((dataItem < MINDATA) || (dataItem > MAXDATA)) {
 
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value (%5.0f), System Values: DATAMIN (%5.0f),DATAMAX (%5.0f)",
+                                dataItem, (double) MINDATA, (double) MAXDATA);
+
+                    } else {
+
+                        Data[dataItem] = Data[dataItem] + 1;
+                        sdItems++;
                     }
-                }
+                } else {
+                    System.out.printf("ERROR; RANGE VIOLATION - Range values not set");
+
             }
+            break;
         }
+
+            case GROUPED: {
+
+            }
+
+            default:{
+                sdItems = INVALID;
+                calcMethod = INVALID_CALC_METHOD;
+                // INSERT NAME
+                System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED or insert")
+            }
 
 
 
