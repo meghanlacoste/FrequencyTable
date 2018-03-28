@@ -1,6 +1,5 @@
 # FrequencyTable
 
-package com.company;
 
 //---------*---------*---------*---------*
 // The use of static imports is something that should be used carefully.
@@ -9,6 +8,8 @@ package com.company;
 import static com.company.ProjConstants.*;
 
 public class StDeviation {
+
+
 
     /* ---------*---------*---------*---------*---------*---------*---------*---------*
     // Class Level Variables
@@ -35,8 +36,9 @@ public class StDeviation {
     // ******************************************************************************
     // ******************************************************************************
 
-    private int sdMinRange = INVALID;
-    private int sdMaxRange = INVALID;
+    private int sdCalcMethod = INVALID_CALC_METHOD;
+    private int sdMinRange = INVALID_RANGE;
+    private int sdMaxRange = INVALID_RANGE;
 
 
     // THE USER WILL BE ALLOWED TO SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
@@ -55,8 +57,6 @@ public class StDeviation {
     //   - calcVariance   (precondition -  average calculated, data added, & calculation method is set)
 
 
-    private int calcMethod = INVALID;
-
     public void setCalcMethod(int how2calculate) {
 
         // Sets the class variable
@@ -65,47 +65,49 @@ public class StDeviation {
 
         switch (how2calculate) {
             case DISCRETE:
-                setCalcMethod(DISCRETE);
+                sdCalcMethod = DISCRETE;
                 break;
             case FRQTABLE:
-                setCalcMethod(FRQTABLE);
+                sdCalcMethod = FRQTABLE;
                 break;
             case GROUPED:
-                setCalcMethod(GROUPED);
+                sdCalcMethod = GROUPED;
                 break;
             default:
-                setCalcMethod(INVALID_CALC_METHOD);
+                sdCalcMethod = INVALID_CALC_METHOD;
+                System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN");
                 break;
         }
 
     }
 
     public int getCalcMethod() {
-        return calcMethod;
+
+        return sdCalcMethod;
     }
 
-    public void setMin(int userMin) {
+    public void setMin(int sdMinRange) {
 
-
-
+        if (sdMinRange < MINDATA){
+            sdMinRange = INVALID_RANGE;
+        }
 
     }
 
     public int getMin() {
-    
-    return userMin;
- 
+
+      return sdMinRange;
     }
 
-    public void setMax(int userMax) {
-
-
+    public void setMax(int sdMaxRange) {
+        if (sdMaxRange > MAXDATA) {
+            sdMaxRange = INVALID_RANGE;
+        }
     }
 
     public int getMax() {
- 
-    return userMax;
 
+        return sdMaxRange;
     }
 
     // val=getnext(){
@@ -125,19 +127,15 @@ public class StDeviation {
     //      Pre-Conditions:
     //          - none
     //
-     public void addNewDataItem(int dataItem) {
+    public void addNewDataItem(int dataItem){
 
-        // In this case we have to check if we are adding the first data item.
-        // If sdItems = -1 then no data has been previously added so we set
-        // the number of items to zero
-
-        if ((sdItems == INVALID)) {
+        if ((sdItems == INVALID)){
             sdItems = 0;
         }
 
         switch (getCalcMethod()){
 
-            case DISCRETE: {
+            case DISCRETE:{
 
                 Data[sdItems] = dataItem;
                 sdItems++;
@@ -148,40 +146,38 @@ public class StDeviation {
 
                 if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)){
 
-                    if ((dataItem < getMin()) || (dataItem > getMax())){
+                    if ((dataItem < getMin())|| (dataItem > getMax())){
 
-                        System.out.printf("ERROR: RANGE VIOLATION - Data Value (%5.0f), User Values: Minimum (%5.0f)",
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), User Values: Minimum ( %5.0f ), Maxium ( %5.0f )",
                                 dataItem, (double) getMin(), (double) getMax());
 
-                    } else if ((dataItem < MINDATA) || (dataItem > MAXDATA)) {
+                    } else if ((dataItem < MINDATA) || (dataItem > MAXDATA)){
 
-                        System.out.printf("ERROR: RANGE VIOLATION - Data Value (%5.0f), System Values: DATAMIN (%5.0f),DATAMAX (%5.0f)",
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ), DATAMAX ( %5.0f )",
                                 dataItem, (double) MINDATA, (double) MAXDATA);
 
                     } else {
 
                         Data[dataItem] = Data[dataItem] + 1;
                         sdItems++;
+
                     }
                 } else {
-                    System.out.printf("ERROR; RANGE VIOLATION - Range values not set");
-
+                    System.out.printf("ERROR: RANGE VIOLATION - Range values not set");
+                }
+                break;
             }
-            break;
-        }
 
-            case GROUPED: {
-
+            case GROUPED:{
             }
 
             default:{
-                sdItems = INVALID;
-                calcMethod = INVALID_CALC_METHOD;
-                // INSERT NAME
-                System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED or insert")
+                sdItems    = INVALID;
+                sdCalcMethod = INVALID_CALC_METHOD;
+                System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN");
+                break;
             }
-
-
+        }
 
     }
 
@@ -222,11 +218,14 @@ public class StDeviation {
                     }
                     sdAve = total /  (double) sdItems;
                     break;
+
+
                 // if the user selects the calculation method in the Frequency Method Form,
                 // the average will be calculated by...
                 case FRQTABLE:
                     // calculate the average of using the method for the frequency table
                     break;
+
 
                 case INVALID_CALC_METHOD:
                     sdAve=INVALID;
@@ -255,11 +254,13 @@ public class StDeviation {
     //          - at least one data has been added
     //          - the average must have been calculated
     //          - calculation method is set
+
     public double calcVariance(){
 
         double total = 0;
         double difference = 0;
         double diffSquared = 0;
+        int frequency= 0;
 
         // Checks that data entry, and average have been done
         //
@@ -268,14 +269,24 @@ public class StDeviation {
             switch (getCalcMethod()) {
                 case DISCRETE: {
                     for (int i = 0; i < sdItems; i++) {
-                        difference = (Data[i] - sdAve);
-                        diffSquared = Math.pow(difference, 2);
-                        total = total + diffSquared;
+                        total += Math.pow(Data[i] - sdAve,2);
+                        sdVar= total / (double) sdItems;
                     }
                     break;
                 }
 
                 case FRQTABLE: {
+
+                    //calculate the frequency of the data item
+                    // frequency
+
+                    for (int i = 0; i < sdItems; i++) {
+                        difference = (Data[i] - sdAve);
+                        diffSquared = Math.pow(difference,2);
+
+                        total += (diffSquared * frequency);
+                        // sdVar= total / (double) sum of frequency ;
+                    }
                     break;
                 }
 
@@ -283,43 +294,19 @@ public class StDeviation {
                     break;
                 }
 
-                case default: {
+                 default: {
                     System.out.printf("INVALID CALC METHOD, variance can not be obtained");
                     break;
                 }
 
 
             }
-        }
+        }     // Pre-Conditions have not been met sdVar = INVALID;
         else {
-
+            sdVar = INVALID;
             System.out.printf("INVALID ... ");
         }
-        /*
 
-            // Loop over all data and calculate variance
-            //
-
-
-                // The calculation above could have been done on a single line
-                // i.e. total += Math.pow( (Data[i] - sdAve), 2)
-                // but it is easier to understand if done on separate lines.
-
-            }
-
-            // to calculate the variance we need to divide by the number of data items,
-            // the "(double)" below instructs the computer to treat the integer value
-            // of "sdItems" as a real number
-            //
-            sdVar = total / (double) sdItems;
-
-        }
-//        else {
-            // Pre-Conditions have not been met
-            sdVar = INVALID;
-        }
-
-*/
         return sdVar;
     }
 
@@ -333,6 +320,7 @@ public class StDeviation {
     //          - the average must have been calculated
     //          - the variance must have been calculated
     //
+
     public double calcStandardDeviation(){
 
         // Checks that data entry, average, and variance have been done
