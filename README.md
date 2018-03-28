@@ -35,12 +35,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int howManyDataItems  = INVALID;
-        double theAverage     = INVALID;
-        double theVariance    = INVALID;
+        int howManyDataItems = INVALID;
+        double theAverage = INVALID;
+        double theVariance = INVALID;
         double theStDeviation = INVALID;
         String userInputString;
-        int userInputValue;
+        int userInputValue = INVALID;
+        int userInputMAX = INVALID;
+        int userInputMIN = INVALID;
 
 
         // --------------------------------
@@ -54,7 +56,6 @@ public class Main {
         // THE USER WILL BE ALLOWED TO SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
         // IN  A FREQUENCY TABLE. (see changes made to the ProjConstants class)
 
-
         //
         //   IF THE USER SELECTS DISCRETE VARIABLES IN A FREQUENCY TABLE THEN THEY WILL NEED TO BE PROMPTED
         //   FOR A MINIMUM, AND A MAXIMUM BOUNDARY FOR THE RANGE OF VALUES (MINIMUM CANNOT BE LESS THAN 0,
@@ -64,6 +65,14 @@ public class Main {
         // THIS IS WHERE:
         // 1) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY HOW THE MEAN,
         //    AND VARIANCE ARE TO BE CALCULATED, AND
+
+ */
+
+
+
+
+
+
         // 2) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY THE MINIMUM AND
         //    MAXIMUMS FOR THE RANGE OF VALUES TO BE USED.
         //
@@ -99,6 +108,80 @@ public class Main {
         System.out.println("If you would like to select DISCRETE VARIABLES enter ' -111' ");
         System.out.println("if you would like to select discrete variable in a FREQUENCY TABLE enter '-112'");
 
+
+        // loop
+        // get method of calc
+        // check calcmethod
+
+
+
+        // get method of calc
+        // check calc method
+        Scanner scanSystemMethod= new Scanner(System.in);
+        userInputValue= scanSystemMethod.nextInt();
+        CalcSD.setCalcMethod(userInputValue);
+
+
+
+        // switch on method using getMethod
+        // loop
+
+        switch (CalcSD.getCalcMethod()) {
+            case DISCRETE:{
+
+            }
+
+
+            case FRQTABLE:{
+
+                System.out.println("Please enter the MINIMUM VALUE in your file");
+                Scanner scanSystemMin= new Scanner(System.in);
+                userInputMIN = scanSystemMin.nextInt();
+                CalcSD.setMin(userInputMIN);
+
+                System.out.println("Please enter the MAXIMUM VALUE in your file");
+                Scanner scanSystemMax= new Scanner(System.in);
+                userInputMAX = scanSystemMax.nextInt();
+                CalcSD.setMin(userInputMAX);
+
+                if ((CalcSD.getMax();= INVALID_RANGE)|| (CalcSD.getMin()= INVALID_RANGE)) {
+
+                    System.out.println("ERROR: INVALID RANGE");
+                    System.out.println("Please enter the MINIMUM VALUE in your file");
+                    userInputMIN = scanSystemMin.nextInt();
+                    CalcSD.setMin(userInputMIN);
+
+                    System.out.println("Please enter the MAXIMUM VALUE in your file");
+                    userInputMAX = scanSystemMax.nextInt();
+                    CalcSD.setMin(userInputMAX);
+                    
+                }
+
+            }
+
+
+            case GROUPED: {
+
+            }
+
+
+            case INVALID_CALC_METHOD: {
+
+                // get appropriate input data
+
+                System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN, TRY AGAIN");
+
+                userInputValue= scanSystemMethod.nextInt();
+                CalcSD.setCalcMethod(userInputValue);
+
+                break;
+            }
+        }
+
+
+
+
+
         try {
 
             // --------------------------------
@@ -116,15 +199,7 @@ public class Main {
             // PRE-TESTED LOOP. RECALL THE USER CAN SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
             // IN  A FREQUENCY TABLE. IF THE USER SELECTED:
 
-            userInput = scanSystemIn.next();
 
-            switch (userInput){
-
-                case "-111":
-                    System.out.println("You have chosen DISCRETE VARIABLES");
-                   //set calcMethod
-                    break;
-                }
 
 
             //  1) DISCRETE VARIABLES THEN ONLY "MAXDATA" ITEMS CAN BE READ INTO THE ARRAY
@@ -233,3 +308,4 @@ public class Main {
 
     } // end of main method
 } // end of class
+
