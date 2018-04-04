@@ -1,5 +1,4 @@
-# FrequencyTable
-
+package com.company;
 
 //---------*---------*---------*---------*
 // The use of static imports is something that should be used carefully.
@@ -86,10 +85,13 @@ public class StDeviation {
         return sdCalcMethod;
     }
 
-    public void setMin(int sdMinRange) {
+    public void setMin(int userIn) {
 
-        if (sdMinRange < MINDATA){
+        if (userIn < MINDATA){
             sdMinRange = INVALID_RANGE;
+        }
+        else {
+            sdMinRange = userIn;
         }
 
     }
@@ -99,9 +101,12 @@ public class StDeviation {
       return sdMinRange;
     }
 
-    public void setMax(int sdMaxRange) {
-        if (sdMaxRange > MAXDATA) {
+    public void setMax(int userIn) {
+        if (userIn > MAXDATA){
             sdMaxRange = INVALID_RANGE;
+        }
+        else {
+            sdMinRange = userIn;
         }
     }
 
@@ -172,7 +177,7 @@ public class StDeviation {
             }
 
             default:{
-                sdItems    = INVALID;
+                sdItems   = INVALID;
                 sdCalcMethod = INVALID_CALC_METHOD;
                 System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN");
                 break;
@@ -211,19 +216,28 @@ public class StDeviation {
             switch (getCalcMethod()) {
                 // if the user selects the calculation method in the Frequency Method Form,
                 // the average will be calculated by...
-
+                //
                 case DISCRETE:
                     for (int i = 0; i < sdItems; i++) {
                         total += Data[i];
                     }
-                    sdAve = total /  (double) sdItems;
+                    sdAve = total / (double) sdItems;
                     break;
 
 
                 // if the user selects the calculation method in the Frequency Method Form,
                 // the average will be calculated by...
                 case FRQTABLE:
+
+                {
                     // calculate the average of using the method for the frequency table
+                    // MULTIPLY value BY FREQUENCY
+                }
+                break;
+
+                case GROUPED:{
+
+                }
                     break;
 
 
@@ -262,6 +276,7 @@ public class StDeviation {
         double diffSquared = 0;
         int frequency= 0;
 
+
         // Checks that data entry, and average have been done
         //
         if ((sdItems != INVALID) || (sdAve != INVALID)) {
@@ -277,8 +292,16 @@ public class StDeviation {
 
                 case FRQTABLE: {
 
-                    //calculate the frequency of the data item
-                    // frequency
+                    // calculate FREQUENCY of each different value
+
+                    // read the items stored in the main
+
+                    // if data item does not equal previous item{
+                    // create new value;}
+                    // if data item equals previous item{
+                    //increase counter (frequency) of value by 1;}
+                    //
+
 
                     for (int i = 0; i < sdItems; i++) {
                         difference = (Data[i] - sdAve);
