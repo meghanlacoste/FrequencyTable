@@ -17,7 +17,7 @@ public class Main {
     // --------------------------------
     // Here is a private method (procedure) that will Display the results to the screen
     //
-    private static void displayResults(int numItems, double ave, double var, double dev){
+    private static void displayResults(int numItems, double ave, double var, double dev) {
 
         System.out.println("==========================================================================================");
         System.out.println("                       Data Distribution Info\n");
@@ -26,9 +26,9 @@ public class Main {
         System.out.printf("\tVariance:.............. %10.4f\n", var);
         System.out.printf("\tStandard Deviation:.... %10.4f\n", dev);
         System.out.println("\n                       Range Values\n");
-        System.out.printf("\t68 %% of Data:\t %10.4f    <  %10.4f    <  %10.4f\n", (ave - dev),ave,(ave + dev));
-        System.out.printf("\t95 %% of Data:\t %10.4f    <  %10.4f    <  %10.4f\n", (ave - (2*dev)),ave,(ave + (2*dev)));
-        System.out.printf("\t99 %% of Data:\t %10.4f    <  %10.4f    <  %10.4f\n", (ave - (3*dev)),ave,(ave + (3*dev)));
+        System.out.printf("\t68 %% of Data:\t %10.4f    <  %10.4f    <  %10.4f\n", (ave - dev), ave, (ave + dev));
+        System.out.printf("\t95 %% of Data:\t %10.4f    <  %10.4f    <  %10.4f\n", (ave - (2 * dev)), ave, (ave + (2 * dev)));
+        System.out.printf("\t99 %% of Data:\t %10.4f    <  %10.4f    <  %10.4f\n", (ave - (3 * dev)), ave, (ave + (3 * dev)));
         System.out.println("==========================================================================================\n");
 
     }
@@ -43,6 +43,8 @@ public class Main {
         int userInputValue = INVALID;
         int userInputMAX = INVALID;
         int userInputMIN = INVALID;
+        boolean fileDone = false;
+        int counter = 0;
 
 
         // --------------------------------
@@ -66,10 +68,13 @@ public class Main {
         // 1) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY HOW THE MEAN,
         //    AND VARIANCE ARE TO BE CALCULATED, AND
 
- */
 
-
-
+        // CHANGE SECTION SO NAMES ARE THE SAME
+     /*
+        System.out.printf("==============================================================");
+            System.out.println("\t 1) Please select the Calculation Method");
+        System.out.println();
+         */
 
 
 
@@ -114,37 +119,36 @@ public class Main {
         // check calcmethod
 
 
-
         // get method of calc
         // check calc method
-        Scanner scanSystemMethod= new Scanner(System.in);
-        userInputValue= scanSystemMethod.nextInt();
+        Scanner scanSystemMethod = new Scanner(System.in);
+        userInputValue = scanSystemMethod.nextInt();
         CalcSD.setCalcMethod(userInputValue);
-
 
 
         // switch on method using getMethod
         // loop
 
         switch (CalcSD.getCalcMethod()) {
-            case DISCRETE:{
+            case DISCRETE: {
 
             }
 
 
-            case FRQTABLE:{
-
+            case FRQTABLE: {
+                //sets min
                 System.out.println("Please enter the MINIMUM VALUE in your file");
-                Scanner scanSystemMin= new Scanner(System.in);
+                Scanner scanSystemMin = new Scanner(System.in);
                 userInputMIN = scanSystemMin.nextInt();
                 CalcSD.setMin(userInputMIN);
 
                 System.out.println("Please enter the MAXIMUM VALUE in your file");
-                Scanner scanSystemMax= new Scanner(System.in);
+                Scanner scanSystemMax = new Scanner(System.in);
                 userInputMAX = scanSystemMax.nextInt();
                 CalcSD.setMin(userInputMAX);
 
-                if ((CalcSD.getMax();= INVALID_RANGE)|| (CalcSD.getMin()= INVALID_RANGE)) {
+                //if the minimum or maximum is not within the range, ask the user to enter a new value
+                if ((CalcSD.getMax() == INVALID_RANGE) || (CalcSD.getMin() == INVALID_RANGE)) {
 
                     System.out.println("ERROR: INVALID RANGE");
                     System.out.println("Please enter the MINIMUM VALUE in your file");
@@ -154,7 +158,7 @@ public class Main {
                     System.out.println("Please enter the MAXIMUM VALUE in your file");
                     userInputMAX = scanSystemMax.nextInt();
                     CalcSD.setMin(userInputMAX);
-                    
+
                 }
 
             }
@@ -171,15 +175,12 @@ public class Main {
 
                 System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN, TRY AGAIN");
 
-                userInputValue= scanSystemMethod.nextInt();
+                userInputValue = scanSystemMethod.nextInt();
                 CalcSD.setCalcMethod(userInputValue);
 
                 break;
             }
         }
-
-
-
 
 
         try {
@@ -200,8 +201,6 @@ public class Main {
             // IN  A FREQUENCY TABLE. IF THE USER SELECTED:
 
 
-
-
             //  1) DISCRETE VARIABLES THEN ONLY "MAXDATA" ITEMS CAN BE READ INTO THE ARRAY
             //  2) DISCRETE VARIABLES IN A FREQUENCY TABLE THEN THEY WERE PROMPTED FOR A MINIMUM, AND A
             //     MAXIMUM BOUNDARY FOR THE RANGE OF VALUES (MINIMUM CANNOT BE LESS THAN 0, AND MAXIMUM
@@ -214,33 +213,70 @@ public class Main {
             // ---------------------------------------------
             // Reads in values from the file in a for loop
             //
+            // WHILE LOOP TO READ UNTIL THE END OF FILE
+            // STORE AND READ VALUES
+            //
 
-            for(int i=0; i < MAXDATA; i++) {
-
-                // ---------------------------------------------
-                // The scanner checks if there is another integer and prints it
-                // if there is
-                //
+            while (!fileDone) {
 
                 if (scanUserFile.hasNext()) {
 
-                    // gets the next integer from the file and adds it into the Standard Deviation Object
-                    CalcSD.addNewDataItem(scanUserFile.nextInt());
+                    counter = scanUserFile.nextInt();
 
-                }
-                else {
-                    // ---------------------------------------------
-                    // The scanner detected no other integers
-                    // - closes the scanner for the file
-                    // - breaks out of the for loop
-                    //
+                    switch (CalcSD.getCalcMethod()) {
+
+                        case DISCRETE:
+
+
+
+                            if (CalcSD.getNumberOfDataItems() >= MAXDATA) {
+
+                                System.out.printf("\n\nThe file was not completely read into array \n");
+
+                                fileDone = true;
+
+                            } else {
+                                // ---------------------------------------------
+                                // The scanner detected no other integers
+                                // - closes the scanner for the file
+                                // - breaks out of the for loop
+                                //
+                                CalcSD.addNewDataItem(counter);
+
+                            }
+                            // A break statement allows us to exit the loop before we have reach the end
+                            break;
+
+                        case FRQTABLE:
+
+                            // no preconditions, counter can be greater than 2000
+
+                            CalcSD.addNewDataItem(counter);
+
+                            System.out.print("\n\nDataFileFILE has been completely READ\n\n");
+
+                            fileDone = true;
+
+                            break;
+
+                        case GROUPED: {
+
+                        }
+                        default: {
+
+                        }
+                        break;
+                    }// end switch statement
+                } else {
                     System.out.print("\n\nDataFileFILE has been completely READ\n\n");
                     scanUserFile.close();
+                    fileDone = true;
 
                     // A break statement allows us to exit the loop before we have reach the end
                     break;
                 }
             }
+
 
             // ******************************************************************************
             // ******************************************************************************
@@ -257,8 +293,8 @@ public class Main {
             //
             howManyDataItems = CalcSD.getNumberOfDataItems();
             theAverage = CalcSD.calcAverage();
-            theVariance =  CalcSD.calcVariance();
-            theStDeviation =  CalcSD.calcStandardDeviation();
+            theVariance = CalcSD.calcVariance();
+            theStDeviation = CalcSD.calcStandardDeviation();
 
             // ---------------------------------------------
             // Display the information to the screen
@@ -274,22 +310,18 @@ public class Main {
                             // Use the private method to display the results
                             //
 
-                            displayResults(howManyDataItems,theAverage,theVariance, theStDeviation);
+                            displayResults(howManyDataItems, theAverage, theVariance, theStDeviation);
 
-                        }
-                        else {
+                        } else {
                             System.out.println("ERROR Standard Deviation: NO VARIANCE Calculated");
                         }
-                    }
-                    else {
+                    } else {
                         System.out.println("ERROR Variance: NO AVERAGE Calculated");
                     }
-                }
-                else {
+                } else {
                     System.out.println("ERROR Average: NO DATA Read from the file");
                 }
-            }
-            else {
+            } else {
                 System.out.println("ERROR Data Read: NO DATA stored check file");
             }
 
@@ -306,6 +338,6 @@ public class Main {
             e.printStackTrace();
         }
 
-    } // end of main method
-} // end of class
+    } // end of main string
+} // end of main clas
 
