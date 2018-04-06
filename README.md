@@ -45,6 +45,10 @@ public class Main {
         int userInputMIN = INVALID;
         boolean fileDone = false;
         int counter = 0;
+        int methodSelection = INVALID;
+        boolean methodSelected = false;
+        boolean rangeSet = false;
+        int rangeValue = INVALID;
 
 
         // --------------------------------
@@ -70,274 +74,271 @@ public class Main {
 
 
         // CHANGE SECTION SO NAMES ARE THE SAME
-     /*
-        System.out.printf("==============================================================");
-            System.out.println("\t 1) Please select the Calculation Method");
-        System.out.println();
-         */
+        // userInputFileName = scanSystemIn.next();
 
 
+        Scanner scanSystemIn = new Scanner(System.in);
 
-        // 2) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY THE MINIMUM AND
-        //    MAXIMUMS FOR THE RANGE OF VALUES TO BE USED.
-        //
-        //
-        // ******************************************************************************
-        // ******************************************************************************
+        System.out.printf("==============================================================/n");
+        System.out.println("\t  Please select the Calculation Method");
+        System.out.println("\t\t 1) Discrete Values");
+        System.out.println("\t\t 2) Discrete Values in a frequency table");
+        System.out.println("\t\t 3) Discrete/ continuous values in groups");
+        System.out.println("\t\t 4) Exit");
 
-        // --------------------------------
-        // create a variable userFileName of type scanner to process input from "System.in"
-        //
+        if (scanSystemIn.hasNextInt()) {
 
-        String userInputFileName;
-        System.out.println("\nPlease type in the INPUT file name\n");
+            methodSelection = scanSystemIn.nextInt();
 
-        // --------------------------------
-        // Here we are using another class defined in Java, the Scanner class, to
-        // allow us to read the input entered by the person running/using our program.
-        // Note: We use the keyword "new" in front of the class name "Scanner" to create
-        // an "object" from a class. Additionally, we tell our program to specifically
-        // create an object that will read information from "System.in". In this case
-        // we have called our Scanner object "s"
-        //
-
-        Scanner scanSystemIn = new Scanner(System.in, "UTF-8");
-
-        // Use the Scanner "userFileName" to get the "next" input from "System.in"
-        userInputFileName = scanSystemIn.next();
-
-
-        // ---------------------------------------------
-        // This is where we "try" to process the file
-        //
-        System.out.println("If you would like to select DISCRETE VARIABLES enter ' -111' ");
-        System.out.println("if you would like to select discrete variable in a FREQUENCY TABLE enter '-112'");
-
-
-        // loop
-        // get method of calc
-        // check calcmethod
-
-
-        // get method of calc
-        // check calc method
-        Scanner scanSystemMethod = new Scanner(System.in);
-        userInputValue = scanSystemMethod.nextInt();
-        CalcSD.setCalcMethod(userInputValue);
-
-
-        // switch on method using getMethod
-        // loop
-
-        switch (CalcSD.getCalcMethod()) {
-            case DISCRETE: {
-
-            }
-
-
-            case FRQTABLE: {
-                //sets min
-                System.out.println("Please enter the MINIMUM VALUE in your file");
-                Scanner scanSystemMin = new Scanner(System.in);
-                userInputMIN = scanSystemMin.nextInt();
-                CalcSD.setMin(userInputMIN);
-
-                System.out.println("Please enter the MAXIMUM VALUE in your file");
-                Scanner scanSystemMax = new Scanner(System.in);
-                userInputMAX = scanSystemMax.nextInt();
-                CalcSD.setMin(userInputMAX);
-
-                //if the minimum or maximum is not within the range, ask the user to enter a new value
-                if ((CalcSD.getMax() == INVALID_RANGE) || (CalcSD.getMin() == INVALID_RANGE)) {
-
-                    System.out.println("ERROR: INVALID RANGE");
-                    System.out.println("Please enter the MINIMUM VALUE in your file");
-                    userInputMIN = scanSystemMin.nextInt();
-                    CalcSD.setMin(userInputMIN);
-
-                    System.out.println("Please enter the MAXIMUM VALUE in your file");
-                    userInputMAX = scanSystemMax.nextInt();
-                    CalcSD.setMin(userInputMAX);
-
+            switch (methodSelection) {
+                case 1: {
+                    CalcSD.setCalcMethod(DISCRETE);
+                    methodSelected = true;
+                    break;
                 }
 
+                case 2: {
+                    CalcSD.setCalcMethod(FRQTABLE);
+                    methodSelected = true;
+
+                    while (!rangeSet) {
+                        System.out.println("Please enter the MINIMUM VALUE in your file");
+                        if (scanSystemIn.hasNextInt()) {
+
+                            rangeValue = scanSystemIn.nextInt();
+                            CalcSD.setMin(rangeValue);
+
+                            System.out.println("Please enter the MAXIMUM VALUE in your file");
+                            if (scanSystemIn.hasNextInt()) {
+
+                                rangeValue = scanSystemIn.nextInt();
+                                CalcSD.setMax(rangeValue);
+
+                                rangeSet = true;
+
+                            } else {
+                                rangeSet = false;
+                            }
+                        } else {
+                            rangeSet = false;
+                        }
+                        break;
+
+
+                    }
+                }
             }
-
-
-            case GROUPED: {
-
-            }
-
-
-            case INVALID_CALC_METHOD: {
-
-                // get appropriate input data
-
-                System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN, TRY AGAIN");
-
-                userInputValue = scanSystemMethod.nextInt();
-                CalcSD.setCalcMethod(userInputValue);
-
-                break;
-            }
+        } else {
+            System.out.println("Enter a valid option");
         }
 
 
-        try {
+            // 2) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY THE MINIMUM AND
+            //    MAXIMUMS FOR THE RANGE OF VALUES TO BE USED.
+            //
+            //
+            // ******************************************************************************
+            // ******************************************************************************
 
             // --------------------------------
-            // create file, and scanner objects
-            // - file object is called tempfilenums.txt and is in your project directory
-            //   that is the same folder as the iml file
+            // create a variable userFileName of type scanner to process input from "System.in"
             //
 
-            File userFile = new File(userInputFileName);
-            Scanner scanUserFile = new Scanner(userFile, "UTF-8");
+            String userInputFileName;
+            System.out.println("\nPlease type in the INPUT file name\n");
 
-            // ******************************************************************************
-            // ******************************************************************************
-            // THE WAY THE DATA IS READ FROM THE FILE WILL HAVE TO BE CHANGED TO READ THE VALUES INSIDE A
-            // PRE-TESTED LOOP. RECALL THE USER CAN SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
-            // IN  A FREQUENCY TABLE. IF THE USER SELECTED:
+            // --------------------------------
+            // Here we are using another class defined in Java, the Scanner class, to
+            // allow us to read the input entered by the person running/using our program.
+            // Note: We use the keyword "new" in front of the class name "Scanner" to create
+            // an "object" from a class. Additionally, we tell our program to specifically
+            // create an object that will read information from "System.in". In this case
+            // we have called our Scanner object "s"
+            //
 
+            Scanner scanSystemIn = new Scanner(System.in, "UTF-8");
 
-            //  1) DISCRETE VARIABLES THEN ONLY "MAXDATA" ITEMS CAN BE READ INTO THE ARRAY
-            //  2) DISCRETE VARIABLES IN A FREQUENCY TABLE THEN THEY WERE PROMPTED FOR A MINIMUM, AND A
-            //     MAXIMUM BOUNDARY FOR THE RANGE OF VALUES (MINIMUM CANNOT BE LESS THAN 0, AND MAXIMUM
-            //     CANNOT BE GREATER THAN 1999). THERE IS NO LIMIT TO THE NUMBER OF DATA ITEMS IN THE FILE
-            //     USING THE FREQUENCY TABLE METHOD SINCE WE ARE COUNTING THE NUMBER OF OCCURRENCES
-            //     (FREQUENCY) OF A VALUE USING THIS METHOD.
-            // ******************************************************************************
-            // ******************************************************************************
+            // Use the Scanner "userFileName" to get the "next" input from "System.in"
+
 
             // ---------------------------------------------
-            // Reads in values from the file in a for loop
+            // This is where we "try" to process the file
             //
-            // WHILE LOOP TO READ UNTIL THE END OF FILE
-            // STORE AND READ VALUES
-            //
-
-            while (!fileDone) {
-
-                if (scanUserFile.hasNext()) {
-
-                    counter = scanUserFile.nextInt();
-
-                    switch (CalcSD.getCalcMethod()) {
-
-                        case DISCRETE:
+            System.out.println("If you would like to select DISCRETE VARIABLES enter ' -111' ");
+            System.out.println("if you would like to select discrete variable in a FREQUENCY TABLE enter '-112'");
 
 
+            // loop
+            // get method of calc
+            // check calcmethod
 
-                            if (CalcSD.getNumberOfDataItems() >= MAXDATA) {
 
-                                System.out.printf("\n\nThe file was not completely read into array \n");
+            // get method of calc
+            // check calc method
+            Scanner scanSystemMethod = new Scanner(System.in);
+            userInputValue = scanSystemMethod.nextInt();
+            CalcSD.setCalcMethod(userInputValue);
+
+
+            // switch on method using getMethod
+            // loop
+
+
+            try {
+
+                // --------------------------------
+                // create file, and scanner objects
+                // - file object is called tempfilenums.txt and is in your project directory
+                //   that is the same folder as the iml file
+                //
+
+                File userFile = new File(userInputFileName);
+                Scanner scanUserFile = new Scanner(userFile, "UTF-8");
+
+                // ******************************************************************************
+                // ******************************************************************************
+                // THE WAY THE DATA IS READ FROM THE FILE WILL HAVE TO BE CHANGED TO READ THE VALUES INSIDE A
+                // PRE-TESTED LOOP. RECALL THE USER CAN SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
+                // IN  A FREQUENCY TABLE. IF THE USER SELECTED:
+
+
+                //  1) DISCRETE VARIABLES THEN ONLY "MAXDATA" ITEMS CAN BE READ INTO THE ARRAY
+                //  2) DISCRETE VARIABLES IN A FREQUENCY TABLE THEN THEY WERE PROMPTED FOR A MINIMUM, AND A
+                //     MAXIMUM BOUNDARY FOR THE RANGE OF VALUES (MINIMUM CANNOT BE LESS THAN 0, AND MAXIMUM
+                //     CANNOT BE GREATER THAN 1999). THERE IS NO LIMIT TO THE NUMBER OF DATA ITEMS IN THE FILE
+                //     USING THE FREQUENCY TABLE METHOD SINCE WE ARE COUNTING THE NUMBER OF OCCURRENCES
+                //     (FREQUENCY) OF A VALUE USING THIS METHOD.
+                // ******************************************************************************
+                // ******************************************************************************
+
+                // ---------------------------------------------
+                // Reads in values from the file in a for loop
+                //
+                // WHILE LOOP TO READ UNTIL THE END OF FILE
+                // STORE AND READ VALUES
+                //
+
+                while (!fileDone) {
+
+                    if (scanUserFile.hasNext()) {
+
+                        counter = scanUserFile.nextInt();
+
+                        switch (CalcSD.getCalcMethod()) {
+
+                            case DISCRETE:
+
+
+                                if (CalcSD.getNumberOfDataItems() >= MAXDATA) {
+
+                                    System.out.printf("\n\nThe file was not completely read into array \n");
+
+                                    fileDone = true;
+
+                                } else {
+                                    // ---------------------------------------------
+                                    // The scanner detected no other integers
+                                    // - closes the scanner for the file
+                                    // - breaks out of the for loop
+                                    //
+                                    CalcSD.addNewDataItem(counter);
+
+                                }
+                                // A break statement allows us to exit the loop before we have reach the end
+                                break;
+
+                            case FRQTABLE:
+
+                                // no preconditions, counter can be greater than 2000
+
+                                CalcSD.addNewDataItem(counter);
+
+                                System.out.print("\n\nDataFileFILE has been completely READ\n\n");
 
                                 fileDone = true;
 
-                            } else {
-                                // ---------------------------------------------
-                                // The scanner detected no other integers
-                                // - closes the scanner for the file
-                                // - breaks out of the for loop
-                                //
-                                CalcSD.addNewDataItem(counter);
+                                break;
+
+                            case GROUPED: {
 
                             }
-                            // A break statement allows us to exit the loop before we have reach the end
+                            default: {
+
+                            }
                             break;
+                        }// end switch statement
+                    } else {
+                        System.out.print("\n\nDataFileFILE has been completely READ\n\n");
+                        scanUserFile.close();
+                        fileDone = true;
 
-                        case FRQTABLE:
-
-                            // no preconditions, counter can be greater than 2000
-
-                            CalcSD.addNewDataItem(counter);
-
-                            System.out.print("\n\nDataFileFILE has been completely READ\n\n");
-
-                            fileDone = true;
-
-                            break;
-
-                        case GROUPED: {
-
-                        }
-                        default: {
-
-                        }
+                        // A break statement allows us to exit the loop before we have reach the end
                         break;
-                    }// end switch statement
-                } else {
-                    System.out.print("\n\nDataFileFILE has been completely READ\n\n");
-                    scanUserFile.close();
-                    fileDone = true;
-
-                    // A break statement allows us to exit the loop before we have reach the end
-                    break;
+                    }
                 }
-            }
 
 
-            // ******************************************************************************
-            // ******************************************************************************
-            // RECALL THAT SINCE THE USER NOW CAN SELECT 2 DIFFERENT DATA PRESENTATIONS THE
-            // WAY WE CALCULATE THE AVERAGE, AND THE VARIANCE CHANGES SLIGHTLY. SINCE WE ARE
-            // USING A NEW "set" METHOD IN THE "StDeviation" CLASS THERE IS NO NEED TO
-            // MODIFY THIS CODE SEGMENT THAT CALCULATES THE STANDARD DEVIATION (SEE ABOVE)
-            // ******************************************************************************
-            // ******************************************************************************
+                // ******************************************************************************
+                // ******************************************************************************
+                // RECALL THAT SINCE THE USER NOW CAN SELECT 2 DIFFERENT DATA PRESENTATIONS THE
+                // WAY WE CALCULATE THE AVERAGE, AND THE VARIANCE CHANGES SLIGHTLY. SINCE WE ARE
+                // USING A NEW "set" METHOD IN THE "StDeviation" CLASS THERE IS NO NEED TO
+                // MODIFY THIS CODE SEGMENT THAT CALCULATES THE STANDARD DEVIATION (SEE ABOVE)
+                // ******************************************************************************
+                // ******************************************************************************
 
-            // ---------------------------------------------
-            // The file has been processed so we can do the calculations now.
-            // Important Note: If the calculation fails the value returned is "INVALID"
-            //
-            howManyDataItems = CalcSD.getNumberOfDataItems();
-            theAverage = CalcSD.calcAverage();
-            theVariance = CalcSD.calcVariance();
-            theStDeviation = CalcSD.calcStandardDeviation();
+                // ---------------------------------------------
+                // The file has been processed so we can do the calculations now.
+                // Important Note: If the calculation fails the value returned is "INVALID"
+                //
+                howManyDataItems = CalcSD.getNumberOfDataItems();
+                theAverage = CalcSD.calcAverage();
+                theVariance = CalcSD.calcVariance();
+                theStDeviation = CalcSD.calcStandardDeviation();
 
-            // ---------------------------------------------
-            // Display the information to the screen
-            // Some checking is performed to ensure accuracy.
-            //
+                // ---------------------------------------------
+                // Display the information to the screen
+                // Some checking is performed to ensure accuracy.
+                //
 
-            if (howManyDataItems != INVALID || howManyDataItems == 0) {
-                if (theAverage != INVALID) {
-                    if (theVariance != INVALID) {
-                        if (theStDeviation != INVALID) {
+                if (howManyDataItems != INVALID || howManyDataItems == 0) {
+                    if (theAverage != INVALID) {
+                        if (theVariance != INVALID) {
+                            if (theStDeviation != INVALID) {
 
-                            // ---------------------------------------------
-                            // Use the private method to display the results
-                            //
+                                // ---------------------------------------------
+                                // Use the private method to display the results
+                                //
 
-                            displayResults(howManyDataItems, theAverage, theVariance, theStDeviation);
+                                displayResults(howManyDataItems, theAverage, theVariance, theStDeviation);
 
+                            } else {
+                                System.out.println("ERROR Standard Deviation: NO VARIANCE Calculated");
+                            }
                         } else {
-                            System.out.println("ERROR Standard Deviation: NO VARIANCE Calculated");
+                            System.out.println("ERROR Variance: NO AVERAGE Calculated");
                         }
                     } else {
-                        System.out.println("ERROR Variance: NO AVERAGE Calculated");
+                        System.out.println("ERROR Average: NO DATA Read from the file");
                     }
                 } else {
-                    System.out.println("ERROR Average: NO DATA Read from the file");
+                    System.out.println("ERROR Data Read: NO DATA stored check file");
                 }
-            } else {
-                System.out.println("ERROR Data Read: NO DATA stored check file");
+
+            } // end of try
+
+            // ---------------------------------------------
+            // Catch Statements from the try above
+            //
+            // If the file cannot be found then an exception (error) is generated (thrown) that we have to
+            // deal with (catch).
+            //
+            catch (FileNotFoundException e) {
+                System.err.format("File Not Found Exception: %s%n", e);
+                e.printStackTrace();
             }
 
-        } // end of try
-
-        // ---------------------------------------------
-        // Catch Statements from the try above
-        //
-        // If the file cannot be found then an exception (error) is generated (thrown) that we have to
-        // deal with (catch).
-        //
-        catch (FileNotFoundException e) {
-            System.err.format("File Not Found Exception: %s%n", e);
-            e.printStackTrace();
         }
 
-    } // end of main string
-} // end of main clas
-
+    }// end of main string
+} // end of main class
