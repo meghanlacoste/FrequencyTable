@@ -1,4 +1,4 @@
-package com.company;
+ package com.company;
 
 //---------*---------*---------*---------*
 // The use of static imports is something that should be used carefully.
@@ -227,11 +227,11 @@ public class StDeviation {
 
                 // if the user selects the calculation method in the Frequency Method Form,
                 // the average will be calculated by...
-                case FRQTABLE:
-
-                {
-                    // calculate the average of using the method for the frequency table
-                    // MULTIPLY value BY FREQUENCY
+                case FRQTABLE:{
+                    for (int i = sdMinRange; i < sdMaxRange; i++) {
+                        total += Data[i];
+                        sdAve= (Data[i]*i)/ sdItems;
+                    }
                 }
                 break;
 
@@ -274,8 +274,6 @@ public class StDeviation {
         double total = 0;
         double difference = 0;
         double diffSquared = 0;
-        int frequency= 0;
-
 
         // Checks that data entry, and average have been done
         //
@@ -292,24 +290,30 @@ public class StDeviation {
 
                 case FRQTABLE: {
 
-                    // calculate FREQUENCY of each different value
-
-                    // read the items stored in the main
 
                     // if data item does not equal previous item{
                     // create new value;}
+
                     // if data item equals previous item{
                     //increase counter (frequency) of value by 1;}
-                    //
+
+                    //Data [sdItems]++;
 
 
-                    for (int i = 0; i < sdItems; i++) {
+                    // sum of (value-average) squared times the frequency
+                    // divide by the sum of all frequencies
+
+
+                    for (int i = sdMinRange; i < sdMaxRange; i++) {
+                        //
                         difference = (Data[i] - sdAve);
                         diffSquared = Math.pow(difference,2);
+                        total += diffSquared * Data[i];
 
-                        total += (diffSquared * frequency);
-                        // sdVar= total / (double) sum of frequency ;
                     }
+
+                    sdVar= total / (double) sdItems;
+
                     break;
                 }
 
@@ -327,7 +331,7 @@ public class StDeviation {
         }     // Pre-Conditions have not been met sdVar = INVALID;
         else {
             sdVar = INVALID;
-            System.out.printf("INVALID ... ");
+            System.out.printf("INVALID VARIANCE");
         }
 
         return sdVar;
