@@ -8,9 +8,9 @@ package com.company;
 // I have only ever used this technique for the project wide constants.
 //
 
-        import static com.company.ProjConstants.*;
-        import java.io.*;
-        import java.util.*;
+import static com.company.ProjConstants.*;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
@@ -49,6 +49,7 @@ public class Main {
         boolean methodSelected = false;
         boolean rangeSet = false;
         int rangeValue = INVALID;
+
 
 
         // --------------------------------
@@ -120,6 +121,7 @@ public class Main {
                                 rangeSet = false;
                             }
                         } else {
+
                             rangeSet = false;
                         }
                         break;
@@ -133,212 +135,188 @@ public class Main {
         }
 
 
-            // 2) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY THE MINIMUM AND
-            //    MAXIMUMS FOR THE RANGE OF VALUES TO BE USED.
-            //
-            //
-            // ******************************************************************************
-            // ******************************************************************************
+        // 2) THE new "set" METHOD SHOULD TO BE USED FROM THE "StDeviation" TO IDENTIFY THE MINIMUM AND
+        //    MAXIMUMS FOR THE RANGE OF VALUES TO BE USED.
+        //
+        //
+        // ******************************************************************************
+        // ******************************************************************************
+
+        // --------------------------------
+        // create a variable userFileName of type scanner to process input from "System.in"
+        //
+
+
+
+        String userInputFileName;
+        System.out.println("\nPlease type in the INPUT file name\n");
+
+        // --------------------------------
+
+        Scanner scanSystemF = new Scanner(System.in, "UTF-8");
+
+        // Use the Scanner "userFileName" to get the "next" input from "System.in"
+        userInputFileName = scanSystemF.next();
+
+        // switch on method using getMethod
+        // loop
+
+
+        try {
 
             // --------------------------------
-            // create a variable userFileName of type scanner to process input from "System.in"
+            // create file, and scanner objects
+            // - file object is called tempfilenums.txt and is in your project directory
+            //   that is the same folder as the iml file
             //
 
-            String userInputFileName;
-            System.out.println("\nPlease type in the INPUT file name\n");
+            File userFile = new File(userInputFileName);
+            Scanner scanUserFile = new Scanner(userFile, "UTF-8");
 
-            // --------------------------------
-            // Here we are using another class defined in Java, the Scanner class, to
-            // allow us to read the input entered by the person running/using our program.
-            // Note: We use the keyword "new" in front of the class name "Scanner" to create
-            // an "object" from a class. Additionally, we tell our program to specifically
-            // create an object that will read information from "System.in". In this case
-            // we have called our Scanner object "s"
-            //
+            // ******************************************************************************
+            // ******************************************************************************
+            // THE WAY THE DATA IS READ FROM THE FILE WILL HAVE TO BE CHANGED TO READ THE VALUES INSIDE A
+            // PRE-TESTED LOOP. RECALL THE USER CAN SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
+            // IN  A FREQUENCY TABLE. IF THE USER SELECTED:
 
-            Scanner scanSystemIn = new Scanner(System.in, "UTF-8");
 
-            // Use the Scanner "userFileName" to get the "next" input from "System.in"
-
+            //  1) DISCRETE VARIABLES THEN ONLY "MAXDATA" ITEMS CAN BE READ INTO THE ARRAY
+            //  2) DISCRETE VARIABLES IN A FREQUENCY TABLE THEN THEY WERE PROMPTED FOR A MINIMUM, AND A
+            //     MAXIMUM BOUNDARY FOR THE RANGE OF VALUES (MINIMUM CANNOT BE LESS THAN 0, AND MAXIMUM
+            //     CANNOT BE GREATER THAN 1999). THERE IS NO LIMIT TO THE NUMBER OF DATA ITEMS IN THE FILE
+            //     USING THE FREQUENCY TABLE METHOD SINCE WE ARE COUNTING THE NUMBER OF OCCURRENCES
+            //     (FREQUENCY) OF A VALUE USING THIS METHOD.
+            // ******************************************************************************
+            // ******************************************************************************
 
             // ---------------------------------------------
-            // This is where we "try" to process the file
+            // Reads in values from the file in a for loop
             //
-            System.out.println("If you would like to select DISCRETE VARIABLES enter ' -111' ");
-            System.out.println("if you would like to select discrete variable in a FREQUENCY TABLE enter '-112'");
+            // WHILE LOOP TO READ UNTIL THE END OF FILE
+            // STORE AND READ VALUES
+            //
+
+            while (!fileDone) {
+
+                if (scanUserFile.hasNext()) {
+
+                    counter = scanUserFile.nextInt();
+
+                    switch (CalcSD.getCalcMethod()) {
+
+                        case DISCRETE:
 
 
-            // loop
-            // get method of calc
-            // check calcmethod
+                            if (CalcSD.getNumberOfDataItems() >= MAXDATA) {
 
-
-            // get method of calc
-            // check calc method
-            Scanner scanSystemMethod = new Scanner(System.in);
-            userInputValue = scanSystemMethod.nextInt();
-            CalcSD.setCalcMethod(userInputValue);
-
-
-            // switch on method using getMethod
-            // loop
-
-
-            try {
-
-                // --------------------------------
-                // create file, and scanner objects
-                // - file object is called tempfilenums.txt and is in your project directory
-                //   that is the same folder as the iml file
-                //
-
-                File userFile = new File(userInputFileName);
-                Scanner scanUserFile = new Scanner(userFile, "UTF-8");
-
-                // ******************************************************************************
-                // ******************************************************************************
-                // THE WAY THE DATA IS READ FROM THE FILE WILL HAVE TO BE CHANGED TO READ THE VALUES INSIDE A
-                // PRE-TESTED LOOP. RECALL THE USER CAN SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
-                // IN  A FREQUENCY TABLE. IF THE USER SELECTED:
-
-
-                //  1) DISCRETE VARIABLES THEN ONLY "MAXDATA" ITEMS CAN BE READ INTO THE ARRAY
-                //  2) DISCRETE VARIABLES IN A FREQUENCY TABLE THEN THEY WERE PROMPTED FOR A MINIMUM, AND A
-                //     MAXIMUM BOUNDARY FOR THE RANGE OF VALUES (MINIMUM CANNOT BE LESS THAN 0, AND MAXIMUM
-                //     CANNOT BE GREATER THAN 1999). THERE IS NO LIMIT TO THE NUMBER OF DATA ITEMS IN THE FILE
-                //     USING THE FREQUENCY TABLE METHOD SINCE WE ARE COUNTING THE NUMBER OF OCCURRENCES
-                //     (FREQUENCY) OF A VALUE USING THIS METHOD.
-                // ******************************************************************************
-                // ******************************************************************************
-
-                // ---------------------------------------------
-                // Reads in values from the file in a for loop
-                //
-                // WHILE LOOP TO READ UNTIL THE END OF FILE
-                // STORE AND READ VALUES
-                //
-
-                while (!fileDone) {
-
-                    if (scanUserFile.hasNext()) {
-
-                        counter = scanUserFile.nextInt();
-
-                        switch (CalcSD.getCalcMethod()) {
-
-                            case DISCRETE:
-
-
-                                if (CalcSD.getNumberOfDataItems() >= MAXDATA) {
-
-                                    System.out.printf("\n\nThe file was not completely read into array \n");
-
-                                    fileDone = true;
-
-                                } else {
-                                    // ---------------------------------------------
-                                    // The scanner detected no other integers
-                                    // - closes the scanner for the file
-                                    // - breaks out of the for loop
-                                    //
-                                    CalcSD.addNewDataItem(counter);
-
-                                }
-                                // A break statement allows us to exit the loop before we have reach the end
-                                break;
-
-                            case FRQTABLE:
-
-                                // no preconditions, counter can be greater than 2000
-
-                                CalcSD.addNewDataItem(counter);
-
-                                System.out.print("\n\nDataFileFILE has been completely READ\n\n");
+                                System.out.printf("\n\nThe file was not completely read into array \n");
 
                                 fileDone = true;
 
-                                break;
-
-                            case GROUPED: {
-
-                            }
-                            default: {
-
-                            }
-                            break;
-                        }// end switch statement
-                    } else {
-                        System.out.print("\n\nDataFileFILE has been completely READ\n\n");
-                        scanUserFile.close();
-                        fileDone = true;
-
-                        // A break statement allows us to exit the loop before we have reach the end
-                        break;
-                    }
-                }
-
-
-                // ******************************************************************************
-                // ******************************************************************************
-                // RECALL THAT SINCE THE USER NOW CAN SELECT 2 DIFFERENT DATA PRESENTATIONS THE
-                // WAY WE CALCULATE THE AVERAGE, AND THE VARIANCE CHANGES SLIGHTLY. SINCE WE ARE
-                // USING A NEW "set" METHOD IN THE "StDeviation" CLASS THERE IS NO NEED TO
-                // MODIFY THIS CODE SEGMENT THAT CALCULATES THE STANDARD DEVIATION (SEE ABOVE)
-                // ******************************************************************************
-                // ******************************************************************************
-
-                // ---------------------------------------------
-                // The file has been processed so we can do the calculations now.
-                // Important Note: If the calculation fails the value returned is "INVALID"
-                //
-                howManyDataItems = CalcSD.getNumberOfDataItems();
-                theAverage = CalcSD.calcAverage();
-                theVariance = CalcSD.calcVariance();
-                theStDeviation = CalcSD.calcStandardDeviation();
-
-                // ---------------------------------------------
-                // Display the information to the screen
-                // Some checking is performed to ensure accuracy.
-                //
-
-                if (howManyDataItems != INVALID || howManyDataItems == 0) {
-                    if (theAverage != INVALID) {
-                        if (theVariance != INVALID) {
-                            if (theStDeviation != INVALID) {
-
-                                // ---------------------------------------------
-                                // Use the private method to display the results
-                                //
-
-                                displayResults(howManyDataItems, theAverage, theVariance, theStDeviation);
-
                             } else {
-                                System.out.println("ERROR Standard Deviation: NO VARIANCE Calculated");
+                                // ---------------------------------------------
+                                // The scanner detected no other integers
+                                // - closes the scanner for the file
+                                // - breaks out of the for loop
+                                //
+                                CalcSD.addNewDataItem(counter);
+
                             }
-                        } else {
-                            System.out.println("ERROR Variance: NO AVERAGE Calculated");
+                            // A break statement allows us to exit the loop before we have reach the end
+                            break;
+
+                        case FRQTABLE:
+
+                            // no preconditions, counter can be greater than 2000
+
+                            CalcSD.addNewDataItem(counter);
+
+                            System.out.print("\n\nDataFileFILE has been completely READ\n\n");
+
+                            fileDone = true;
+
+                            break;
+
+                        case GROUPED: {
+
                         }
-                    } else {
-                        System.out.println("ERROR Average: NO DATA Read from the file");
-                    }
+                        default: {
+
+                        }
+                        break;
+                    }// end switch statement
+
                 } else {
-                    System.out.println("ERROR Data Read: NO DATA stored check file");
+                    System.out.print("\n\nDataFileFILE has been completely READ\n\n");
+                    scanUserFile.close();
+                    fileDone = true;
+
+                    // A break statement allows us to exit the loop before we have reach the end
+                    break;
                 }
-
-            } // end of try
-
-            // ---------------------------------------------
-            // Catch Statements from the try above
-            //
-            // If the file cannot be found then an exception (error) is generated (thrown) that we have to
-            // deal with (catch).
-            //
-            catch (FileNotFoundException e) {
-                System.err.format("File Not Found Exception: %s%n", e);
-                e.printStackTrace();
             }
 
+
+            // ******************************************************************************
+            // ******************************************************************************
+            // RECALL THAT SINCE THE USER NOW CAN SELECT 2 DIFFERENT DATA PRESENTATIONS THE
+            // WAY WE CALCULATE THE AVERAGE, AND THE VARIANCE CHANGES SLIGHTLY. SINCE WE ARE
+            // USING A NEW "set" METHOD IN THE "StDeviation" CLASS THERE IS NO NEED TO
+            // MODIFY THIS CODE SEGMENT THAT CALCULATES THE STANDARD DEVIATION (SEE ABOVE)
+            // ******************************************************************************
+            // ******************************************************************************
+
+            // ---------------------------------------------
+            // The file has been processed so we can do the calculations now.
+            // Important Note: If the calculation fails the value returned is "INVALID"
+            //
+            howManyDataItems = CalcSD.getNumberOfDataItems();
+            theAverage = CalcSD.calcAverage();
+            theVariance = CalcSD.calcVariance();
+            theStDeviation = CalcSD.calcStandardDeviation();
+
+            // ---------------------------------------------
+            // Display the information to the screen
+            // Some checking is performed to ensure accuracy.
+            //
+
+            if (howManyDataItems != INVALID || howManyDataItems == 0) {
+                if (theAverage != INVALID) {
+                    if (theVariance != INVALID) {
+                        if (theStDeviation != INVALID) {
+
+                            // ---------------------------------------------
+                            // Use the private method to display the results
+                            //
+
+                            displayResults(howManyDataItems, theAverage, theVariance, theStDeviation);
+
+                        } else {
+                            System.out.println("ERROR Standard Deviation: NO VARIANCE Calculated");
+                        }
+                    } else {
+                        System.out.println("ERROR Variance: NO AVERAGE Calculated");
+                    }
+                } else {
+                    System.out.println("ERROR Average: NO DATA Read from the file");
+                }
+            } else {
+                System.out.println("ERROR Data Read: NO DATA stored check file");
+            }
+
+        } // end of try
+
+        // ---------------------------------------------
+        // Catch Statements from the try above
+        //
+        // If the file cannot be found then an exception (error) is generated (thrown) that we have to
+        // deal with (catch).
+        //
+        catch (FileNotFoundException e) {
+            System.err.format("File Not Found Exception: %s%n", e);
+            e.printStackTrace();
         }
 
-    }// end of main string
+
+}// end of main string
 } // end of main class
