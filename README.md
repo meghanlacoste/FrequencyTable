@@ -231,10 +231,6 @@ public class Main {
 
                             CalcSD.addNewDataItem(counter);
 
-                            System.out.print("\n\nDataFileFILE has been completely READ\n\n");
-
-                            fileDone = true;
-
                             break;
 
                         case GROUPED: {
