@@ -231,6 +231,7 @@ public class Main {
 
                             CalcSD.addNewDataItem(counter);
 
+
                             break;
 
                         case GROUPED: {
