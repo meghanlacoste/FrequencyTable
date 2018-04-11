@@ -38,7 +38,7 @@ public class StDeviation {
 
 
 // THE USER WILL BE ALLOWED TO SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
-// IN  A FREQUENCY TABLE. (see changes made to the ProjConstants class)
+// IN  A FREQUENCY TABLE.
 //
 //  The calcMethod class variable will be used to control which method of calculation
 //  is to be used.
@@ -60,18 +60,31 @@ public class StDeviation {
         // GROUPED, if "how2calculate" is not one of these then it must be set to INVALID
 
         switch (how2calculate) {
+
             case DISCRETE:
+
                 sdCalcMethod = DISCRETE;
+
                 break;
+
             case FRQTABLE:
+
                 sdCalcMethod = FRQTABLE;
+
                 break;
+
             case GROUPED:
+
                 sdCalcMethod = GROUPED;
+
                 break;
+
             default:
+
                 sdCalcMethod = INVALID_CALC_METHOD;
+
                 System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN");
+
                 break;
         }
 
@@ -88,6 +101,7 @@ public class StDeviation {
             sdMinRange = INVALID_RANGE;
         }
         else {
+
             sdMinRange = userIn;
         }
 
@@ -99,10 +113,12 @@ public class StDeviation {
     }
 
     public void setMax(int userIn) {
-       if (userIn > MAXDATA){
+
+        if (userIn > MAXDATA){
             sdMaxRange = INVALID_RANGE;
         }
         else {
+
             sdMaxRange = userIn;
         }
     }
@@ -113,11 +129,8 @@ public class StDeviation {
     }
 
 
-
-// ******************************************************************************
-// ******************************************************************************
-
-    // --------------------------------------------------
+// ------------------------------------------------------------------------
+//
 // The following method (procedure) will take a new data item (a parameter)
 // and add it into the 1 Dimensional Array of data values to be used later.
 //
@@ -146,12 +159,16 @@ public class StDeviation {
                     if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
 
                         if ((dataItem < getMin()) || (dataItem > getMax())) {
+
                             System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )",
                                     (double)   dataItem, (double) getMin(), (double) getMax());
+
+
                         } else if ((dataItem < MINDATA) || (dataItem > MAXDATA)) {
 
                             System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ), DATAMAX ( %5.0f )",
                                     (double)  dataItem, (double) MINDATA, (double) MAXDATA);
+
 
                         } else {
 
@@ -159,6 +176,7 @@ public class StDeviation {
                             sdItems++;
 
                         }
+
                     } else {
                         System.out.printf("ERROR: RANGE VIOLATION - Range values not set");
                     }
@@ -177,5 +195,190 @@ public class StDeviation {
             }
 
         }
+
+
+
+
+
+
+// ------------------------------------------------------------
+// The following method (function) will return the total number of data
+// items currently stored
+
+    //      Pre-Conditions:
+//          - none
+//
+    public int getNumberOfDataItems() {
+        return sdItems;
+    }
+
+
+//------------------------------------------------------------
+// The following method (function) returns a double precision value which
+// is the average of all of the data values
+//
+//      Pre-Conditions:
+//          - at least one data has been added
+//          -calculation method has been set
+//
+    public double calcAverage() {
+
+        double total = 0;
+
+        if (sdItems != INVALID) {
+            // Add all data values together (recall sdItems is the number of data items in the
+            // Data storage array
+            //
+            switch (getCalcMethod()) {
+                // if the user selects the calculation method in the Frequency Method Form,
+                // the average will be calculated by...
+                //
+                case DISCRETE:
+                    for (int i = 0; i < sdItems; i++) {
+                        total += Data[i];
+                    }
+                    sdAve = total / (double) sdItems;
+                    break;
+
+
+                // if the user selects the calculation method in the Frequency Method Form,
+                // the average will be calculated by...
+                case FRQTABLE:{
+                    for (int i = sdMinRange; i <= sdMaxRange; i++) {
+                        total += (Data[i]*i);
+                        sdAve= total/ sdItems;
+                    }
+                }
+                break;
+
+                case GROUPED:{
+
+                }
+                break;
+
+
+                case INVALID_CALC_METHOD:
+                    sdAve=INVALID;
+                    break;
+                // case GROUPED:
+                // this will be the third part of the program
+                // break;
+
+            }// end switch (calcMethod)
+        }
+        else {
+            // Pre-Conditions have not been met
+            sdAve = INVALID;
+        }
+
+        // returns the calculated average
+        return sdAve;
+    }
+
+// --------------------------------------------------
+// The following method (function) returns a double precision value which is the Variance of all
+// of the data values. If there is no data, or if the average has not been calculated
+// then it returns INVALID
+//
+//      Pre-Conditions:
+//          - at least one data has been added
+//          - the average must have been calculated
+//          - calculation method is set
+
+    public double calcVariance(){
+
+        double total = 0;
+        double difference = 0;
+        double diffSquared = 0;
+
+        // Checks that data entry, and average have been done
+        //
+        if ((sdItems != INVALID) || (sdAve != INVALID)) {
+
+            switch (getCalcMethod()) {
+
+                case DISCRETE: {
+                    for (int i = 0; i < sdItems; i++) {
+                        total += Math.pow(Data[i] - sdAve,2);
+                        sdVar= total / (double) sdItems;
+                    }
+                    break;
+                }
+
+                case FRQTABLE: {
+
+
+                    // if data item does not equal previous item{
+                    // create new value;}
+
+                    // if data item equals previous item{
+                    //increase counter (frequency) of value by 1;}
+
+                   // Data [sdItems]++;
+
+
+                    // sum of (value-average) squared times the frequency
+                    // divide by the sum of all frequencies
+
+
+                    for (int i = sdMinRange; i <= sdMaxRange; i++) {
+                        //
+                        difference = (i- sdAve);
+                        diffSquared = Math.pow(difference,2);
+                        total += diffSquared * Data[i];
+
+                    }
+
+                    sdVar= total / (double) sdItems;
+
+                    break;
+                }
+
+                case GROUPED: {
+                    break;
+                }
+
+                default: {
+                    System.out.println("INVALID CALC METHOD, variance can not be obtained");
+                    break;
+                }
+
+
+            }
+        }     // Pre-Conditions have not been met sdVar = INVALID;
+        else {
+            sdVar = INVALID;
+            System.out.println("INVALID VARIANCE");
+        }
+
+        return sdVar;
+    }
+
+// --------------------------------------------------
+// The following method (function) returns a double precision value which is the Standard
+// Deviation of all of the data values. If there is no data, no average, or if
+// the variance has not been calculated then it returns INVALID
+//
+//      Pre-Conditions:
+//          - at least one data has been added
+//          - the average must have been calculated
+//          - the variance must have been calculated
+//
+
+    public double calcStandardDeviation(){
+
+        // Checks that data entry, average, and variance have been done
+        if ((sdItems != INVALID) || (sdAve != INVALID) || (sdVar != INVALID)) {
+            sdDev = Math.sqrt(sdVar);
+        }
+        else {
+            // Pre-Conditions have not been met
+            sdDev = INVALID;
+        }
+
+        return sdDev;
+    }
+
+        }// end class
 
 
