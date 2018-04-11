@@ -11,15 +11,9 @@ public class StDeviation {
 // Class Level Variables
 // ---------*---------*---------*---------*---------*---------*---------*--------- */
 
-    // As discussed in class we are using a class populated with Project Constants to
-// ensure help manage the project data. This ensures that each class can access the
-// constant values, but in the event that a change is needed/required that this will
-// only need to be made in one location, or file.
-//
-// Notice: If I had not done the "static import com.company.ProjConstants.*;" then
-//         the use of the constant would have been written as:
-//
-//         private int[] Data = new int[ProjConstants.MAXDATA];
+    //The Project Constants clas is used to help manage the project data.
+//  This ensures that each class can access the constant values, but in the event that
+//a change is needed/required that this will only need to be made in one location, or file.
 //
     private int[] Data = new int[MAXDATA];
 
@@ -44,14 +38,6 @@ public class StDeviation {
 //  is to be used.
 //
 //  THE calcMethod VARIABLE MUST BE SET USING THE "set" AND "get" METHODS
-//
-// THERE ARE SEVERAL METHODS THAT WILL HAVE TO CHANGE IN THIS CLASS TO ALLOW THE
-// CALCULATION OF STANDARD DEVIATION USING THE FREQUENCY TABLE METHOD AS WELL.
-// PLEASE CONSIDER THE CHANGES THAT YOU WILL HAVE TO MAKE TO:
-//   - addNewDataItem (precondition -  calculation method is set)
-//   - calcAverage    (precondition -  data added, & calculation method is set)
-//   - calcVariance   (precondition -  average calculated, data added, & calculation method is set)
-
 
     public void setCalcMethod(int how2calculate) {
 
@@ -90,6 +76,7 @@ public class StDeviation {
 
     }
 
+// when called upon this method will return the calculation method the user has chosen
     public int getCalcMethod() {
 
         return sdCalcMethod;
@@ -135,7 +122,7 @@ public class StDeviation {
 // and add it into the 1 Dimensional Array of data values to be used later.
 //
 //      Pre-Conditions:
-//          - none
+//          - calculation method is set
 //
     public void addNewDataItem(int dataItem) {
 
@@ -218,7 +205,7 @@ public class StDeviation {
 // is the average of all of the data values
 //
 //      Pre-Conditions:
-//          - at least one data has been added
+//          -at least one data has been added
 //          -calculation method has been set
 //
     public double calcAverage() {
