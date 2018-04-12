@@ -82,6 +82,8 @@ public class StDeviation {
         return sdCalcMethod;
     }
 
+    // this method sets the minimum range (sdMinRange) to the user input
+    // so long as the input is greater or equal to 0 (MINDATA)
     public void setMin(int userIn) {
 
         if (userIn < MINDATA){
@@ -93,12 +95,14 @@ public class StDeviation {
         }
 
     }
-
+    // when called upon this function will return the minimum range
     public int getMin() {
 
         return sdMinRange;
     }
 
+    // this method sets the maximum range (sdMaxRange) to the user input
+    // so long as the input is less than 2000 (MAXDATA)
     public void setMax(int userIn) {
 
         if (userIn > MAXDATA){
@@ -110,6 +114,7 @@ public class StDeviation {
         }
     }
 
+    // when called upon this function will return the maximum range
     public int getMax() {
 
         return sdMaxRange;
@@ -126,7 +131,9 @@ public class StDeviation {
 //
     public void addNewDataItem(int dataItem) {
 
-
+        // In this case we have to check if we are adding the first data item.
+        // If sdItems = -1 then no data has been previously added so we set
+        // the number of items to zero
 
         if ((sdItems == INVALID)) {
             sdItems = 0;
@@ -134,6 +141,7 @@ public class StDeviation {
 
         switch (getCalcMethod()) {
 
+            // This method is called upon if the calculation method is set to DISCRETE
             case DISCRETE: {
 
                 Data[sdItems] = dataItem;
@@ -141,23 +149,38 @@ public class StDeviation {
                 break;
             }
 
+            // This method is called upon if the calculation method is set to FRQTABLE
             case FRQTABLE: {
+
+                // checks:
+                //- the user min and max is valid
+                //- the data values being added do not contradict the user given min and max
+                // (they are not less than the min or greater than the max)
+                //- the data values are within the system range (0 .. 1999)
+                // if these conditions are not met an error message is displayed and sdItems is set to invalid
 
                 if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
 
                     if ((dataItem < getMin()) || (dataItem > getMax())) {
 
-                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )",
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
                                 (double)   dataItem, (double) getMin(), (double) getMax());
+
+                        sdItems= INVALID;
 
 
                     } else if ((dataItem < MINDATA) || (dataItem > MAXDATA)) {
 
-                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )",
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
                                 (double)  dataItem, (double) MINDATA, (double) MAXDATA);
+
+                        sdItems= INVALID;
 
 
                     } else {
+
+                        // if all conditions are satisfied then 1 is added to the frequency,
+                        // and the sum of the frequencies (sdItems)
 
                         Data[dataItem] = Data[dataItem] + 1;
                         sdItems++;
@@ -165,7 +188,10 @@ public class StDeviation {
                     }
 
                 } else {
-                    System.out.printf("ERROR: RANGE VIOLATION - Range values not set");
+                    System.out.printf("ERROR: RANGE VIOLATION - Range values not set\n");
+
+                    sdItems= INVALID;
+
                 }
                 break;
             }
@@ -193,6 +219,7 @@ public class StDeviation {
 //          - none
 //
     public int getNumberOfDataItems() {
+
         return sdItems;
     }
 
@@ -213,7 +240,7 @@ public class StDeviation {
 
             switch (getCalcMethod()) {
 
-                // If the calculation method is DISCRETE - Discrete values
+                // This method is called upon if the calculation method is set to FRQTABLE
                 case DISCRETE:
                     // the (double) total represents sum of all data values (Data[i]) together
                     // The average (sdAve) is set to the total divided by variable sdItems
@@ -226,16 +253,18 @@ public class StDeviation {
                     break;
 
 
-                // If the calculation method is FRQTABLE - Discrete values in a frequency table
-
+                // This method is called upon if the calculation method is set to FRQTABLE
                 case FRQTABLE:{
-                    // (double) total represents the sum of all of the data values (variable i) divided by their frequency (Data[i])
-                    // divides total by sdItems (the sum of all frequencies in the array/ the number of data items in array)
+                    // (double) total represents the sum of all of the data values (variable i)divided by
+                    // their frequency (Data[i])
+
 
                     for (int i = sdMinRange; i <= sdMaxRange; i++) {
                         total += (Data[i]*i);
 
-                        // The average (sdAve) is set to be the quotient of the total and sdItems
+
+                        // sets the average (sdAve) to the total divided by
+                        // sdItems (the sum of all frequencies in the array/ the number of data items in array)
                         sdAve= total/ sdItems;
                     }
                 }
@@ -286,23 +315,33 @@ public class StDeviation {
 
             switch (getCalcMethod()) {
 
+                // called upon if the calculation method is set to DISCRETE
                 case DISCRETE: {
+
+                    // Loop over all data and calculate variance
+                    //
                     for (int i = 0; i < sdItems; i++) {
+
                         total += Math.pow(Data[i] - sdAve,2);
+
+                        // to calculate the variance we need to divide by the number of data items,
+                        // the "(double)" below instructs the computer to treat the integer value
+                        // of "sdItems" as a real number
                         sdVar= total / (double) sdItems;
                     }
                     break;
                 }
 
-                // If the calculation method is FRQTABLE- Discrete Values in a frequency table
+                // called upon if the calculation method is set to FRQTABLE
                 case FRQTABLE: {
 
-                    // the variable difference represents the sum of the data values subtracted by the mean.
-                    // variable diffSquared calculates square of the difference
-                    // (double) total is product of sum of the diffSquared multiplied by
-                    // the frequency for each unique data value
-
+                    // loops over all data to calculate the variance
                     for (int i = sdMinRange; i <= sdMaxRange; i++) {
+                        //
+                        // the variable 'difference' represents the sum of the data values subtracted by the mean.
+                        // variable 'diffSquared' calculates square of the difference
+                        // (double) total is product of sum of the diffSquared multiplied by
+                        // the frequency for each unique data value
                         //
                         difference = (i- sdAve);
                         diffSquared = Math.pow(difference,2);
@@ -359,6 +398,7 @@ public class StDeviation {
             sdDev = INVALID;
         }
 
+        //returns calculated standard deviation
         return sdDev;
     }
 
