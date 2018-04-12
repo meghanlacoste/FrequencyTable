@@ -105,7 +105,7 @@ public class StDeviation {
     // so long as the input is less than 2000 (MAXDATA)
     public void setMax(int userIn) {
 
-        if (userIn > MAXDATA){
+        if (userIn >= MAXDATA){
             sdMaxRange = INVALID_RANGE;
         }
         else {
@@ -166,10 +166,11 @@ public class StDeviation {
                         System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
                                 (double)   dataItem, (double) getMin(), (double) getMax());
 
+                        //SHOULD I SET TO INVALID??
                         sdItems= INVALID;
 
 
-                    } else if ((dataItem < MINDATA) || (dataItem > MAXDATA)) {
+                    } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
 
                         System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
                                 (double)  dataItem, (double) MINDATA, (double) MAXDATA);
@@ -403,5 +404,3 @@ public class StDeviation {
     }
 
 }// end class
-
-
