@@ -128,12 +128,16 @@ public class StDeviation {
 //
 //      Pre-Conditions:
 //          - calculation method is set
-//
-    public void addNewDataItem(int dataItem) {
+
+
+
+        public void addNewDataItem ( int dataItem){
 
         // In this case we have to check if we are adding the first data item.
         // If sdItems = -1 then no data has been previously added so we set
         // the number of items to zero
+
+
 
         if ((sdItems == INVALID)) {
             sdItems = 0;
@@ -152,6 +156,7 @@ public class StDeviation {
             // This method is called upon if the calculation method is set to FRQTABLE
             case FRQTABLE: {
 
+
                 // checks:
                 //- the user min and max is valid
                 //- the data values being added do not contradict the user given min and max
@@ -159,41 +164,49 @@ public class StDeviation {
                 //- the data values are within the system range (0 .. 1999)
                 // if these conditions are not met an error message is displayed and sdItems is set to invalid
 
-                if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
+                boolean error = false;
+                while (error == false){
+                {
+                    if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
 
-                    if ((dataItem < getMin()) || (dataItem > getMax())) {
+                        if ((dataItem < getMin()) || (dataItem > getMax())) {
 
-                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
-                                (double)   dataItem, (double) getMin(), (double) getMax());
-
-                        //SHOULD I SET TO INVALID??
-                        sdItems= INVALID;
+                            System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
+                                    (double) dataItem, (double) getMin(), (double) getMax());
+                            error = true;
 
 
-                    } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
+                        } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
 
-                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
-                                (double)  dataItem, (double) MINDATA, (double) MAXDATA);
+                            System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
+                                    (double) dataItem, (double) MINDATA, (double) MAXDATA);
 
-                        sdItems= INVALID;
+                            sdItems = INVALID;
+                            error = true;
 
+
+                        } else {
+
+                            // if all conditions are satisfied then 1 is added to the frequency,
+                            // and the sum of the frequencies (sdItems)
+
+                            Data[dataItem] = Data[dataItem] + 1;
+                            sdItems++;
+
+                        }
 
                     } else {
+                        System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
+                        sdItems = INVALID;
+                        error = true;
 
-                        // if all conditions are satisfied then 1 is added to the frequency,
-                        // and the sum of the frequencies (sdItems)
-
-                        Data[dataItem] = Data[dataItem] + 1;
-                        sdItems++;
+                        break;
 
                     }
 
-                } else {
-                    System.out.printf("ERROR: RANGE VIOLATION - Range values not set\n");
 
-                    sdItems= INVALID;
-
-                }
+                    // if error = true than  break;
+                }// end while error=false loop
                 break;
             }
 
@@ -206,9 +219,9 @@ public class StDeviation {
                 System.out.println("ERROR: Standard Deviation Calculation Method either UNIMPLEMENTED, or UNKNOWN");
                 break;
             }
-        }
-
-    }
+        }// end switch (get calc method)
+    }// end while
+    }// end method add new data item
 
 
 
@@ -285,8 +298,9 @@ public class StDeviation {
             }// end  switch (getCalcMethod())
         }
         else {
-            // Pre-Conditions have not been met
+            // Pre-Conditions have not been met; prints error message
             sdAve = INVALID;
+            System.out.println("ERROR: Invalid AVERAGE");
         }
 
         // returns the calculated average
@@ -368,10 +382,10 @@ public class StDeviation {
 
 
             }
-        }     // Pre-Conditions have not been met sdVar = INVALID; print message to user
+        }     // Pre-Conditions have not been met; sdVar = INVALID; prints error message
         else {
             sdVar = INVALID;
-            System.out.println("INVALID VARIANCE");
+            System.out.println("ERROR: Invalid VARIANCE");
         }
 
         return sdVar;
@@ -395,8 +409,9 @@ public class StDeviation {
             sdDev = Math.sqrt(sdVar);
         }
         else {
-            // Pre-Conditions have not been met
+            // Pre-Conditions have not been met; Prints error message
             sdDev = INVALID;
+            System.out.println("ERROR: Invalid STANDARD DEVIATION");
         }
 
         //returns calculated standard deviation
@@ -404,3 +419,4 @@ public class StDeviation {
     }
 
 }// end class
+
