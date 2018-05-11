@@ -4,6 +4,8 @@ package com.company;
 // I have only ever used this technique for the project wide constants. //
 //
 import static com.company.ProjConstants.*;
+import java.io.*;
+import java.util.*;
 
 public class StDeviation {
 
@@ -29,6 +31,8 @@ public class StDeviation {
     private int sdCalcMethod = INVALID_CALC_METHOD;
     private int sdMinRange = INVALID_RANGE;
     private int sdMaxRange = INVALID_RANGE;
+    private int numberOfGroups = INVALID_RANGE;
+    private int grpSize = INVALID;
 
 
 // THE USER WILL BE ALLOWED TO SELECT DISCRETE VARIABLES, OR DISCRETE VARIABLES
@@ -39,7 +43,7 @@ public class StDeviation {
 //
 //  THE calcMethod VARIABLE MUST BE SET USING THE "set" AND "get" METHODS
 
-    public void setCalcMethod(int how2calculate) {
+    void setCalcMethod(int how2calculate) {
 
         // Sets the class variable
         //  switch/case statement checks if "how2calculate" is DISCRETE, FRQTABLE,
@@ -77,48 +81,73 @@ public class StDeviation {
     }
 
     // when called upon this method will return the calculation method the user has chosen
-    public int getCalcMethod() {
+    int getCalcMethod() {
 
         return sdCalcMethod;
     }
 
     // this method sets the minimum range (sdMinRange) to the user input
     // so long as the input is greater or equal to 0 (MINDATA)
-    public void setMin(int userIn) {
+    void setMin(int userMin) {
 
-        if (userIn < MINDATA){
+        if ((userMin >= MINDATA) && (userMin < MAXDATA)){
+            sdMinRange = userMin;
+        }
+        else{
             sdMinRange = INVALID_RANGE;
         }
-        else {
-
-            sdMinRange = userIn;
-        }
-
     }
     // when called upon this function will return the minimum range
-    public int getMin() {
+    private int getMin() {
 
         return sdMinRange;
     }
 
     // this method sets the maximum range (sdMaxRange) to the user input
     // so long as the input is less than 2000 (MAXDATA)
-    public void setMax(int userIn) {
+    void setMax(int userMax) {
 
-        if (userIn >= MAXDATA){
-            sdMaxRange = INVALID_RANGE;
+        if ((userMax >= MINDATA) && (userMax < MAXDATA)){
+            sdMaxRange = userMax;
         }
-        else {
-
-            sdMaxRange = userIn;
+        else{
+            sdMaxRange = INVALID_RANGE;
         }
     }
 
     // when called upon this function will return the maximum range
-    public int getMax() {
+    private int getMax() {
 
         return sdMaxRange;
     }
+
+    void setNumberOfGroups(int userIn) {
+
+        // pre-conditions:
+        // - the user input is not greater or equal to the range
+        //- the user input is a factor of the range
+        // if the preconditions are not met sdGroupNumber is set to invalid
+
+       int range = (sdMaxRange-sdMinRange + 1);
+       if (userIn >= range || (range % userIn!=0)){
+           numberOfGroups = INVALID_RANGE;
+           grpSize = INVALID;
+       }
+       else {
+
+           numberOfGroups = userIn;
+           grpSize = (range / userIn);
+       }
+
+    }
+    // when called upon this function will return the minimum range
+    public int getNumberOfGroups() {
+
+        return numberOfGroups;
+    }
+
+
+
 
 
     // ------------------------------------------------------------------------
@@ -131,13 +160,11 @@ public class StDeviation {
 
 
 
-        public void addNewDataItem ( int dataItem){
+        void addNewDataItem(int dataItem){
 
         // In this case we have to check if we are adding the first data item.
         // If sdItems = -1 then no data has been previously added so we set
         // the number of items to zero
-
-
 
         if ((sdItems == INVALID)) {
             sdItems = 0;
@@ -155,8 +182,6 @@ public class StDeviation {
 
             // This method is called upon if the calculation method is set to FRQTABLE
             case FRQTABLE: {
-
-
                 // checks:
                 //- the user min and max is valid
                 //- the data values being added do not contradict the user given min and max
@@ -164,54 +189,130 @@ public class StDeviation {
                 //- the data values are within the system range (0 .. 1999)
                 // if these conditions are not met an error message is displayed and sdItems is set to invalid
 
-                boolean error = false;
-                while (error == false){
-                {
-                    if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
 
-                        if ((dataItem < getMin()) || (dataItem > getMax())) {
+                        if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
 
-                            System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
-                                    (double) dataItem, (double) getMin(), (double) getMax());
-                            error = true;
+                            if ((dataItem < getMin()) || (dataItem > getMax())) {
+
+                                System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
+                                        (double) dataItem, (double) getMin(), (double) getMax());
 
 
-                        } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
 
-                            System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
-                                    (double) dataItem, (double) MINDATA, (double) MAXDATA);
+                            } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
 
-                            sdItems = INVALID;
-                            error = true;
+                                System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
+                                        (double) dataItem, (double) MINDATA, (double) MAXDATA);
 
+                                sdItems = INVALID;
+
+
+
+                            } else {
+
+                                // if all conditions are satisfied then 1 is added to the frequency,
+                                // and the sum of the frequencies (sdItems)
+
+                                Data[dataItem] = Data[dataItem] + 1;
+                                sdItems++;
+
+                            }
 
                         } else {
+                            System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
+                            sdItems = INVALID;
 
-                            // if all conditions are satisfied then 1 is added to the frequency,
-                            // and the sum of the frequencies (sdItems)
-
-                            Data[dataItem] = Data[dataItem] + 1;
-                            sdItems++;
+                            break;
 
                         }
 
+
+                break;
+            }
+
+            case GROUPED: {
+                // they specify the range and the number of groups. Divide the difference by the number of groups
+
+                if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
+
+                    if ((dataItem < getMin()) || (dataItem > getMax())) {
+
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
+                                (double) dataItem, (double) getMin(), (double) getMax());
+
+
+                    } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
+
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
+                                (double) dataItem, (double) MINDATA, (double) MAXDATA);
+
+                        sdItems = INVALID;
+
+
                     } else {
+
+                        // if all conditions are satisfied then 1 is added to the frequency,
+                        // and the sum of the frequencies (sdItems)
+
+                        Data[dataItem] = Data[dataItem] + 1;
+                        sdItems++;
+
+                        // do same thing as frq table then in calc average add the sums of the frequency between the intervals and find midpoint
+
+                       /* // preconditions met. The groups are created and one is
+
+                        int intervalLength = ((sdMaxRange - sdMinRange) + 1) / numberOfGroups;
+
+
+                        System.out.println ("\t\t\t\t\t\t\t\tMax " + sdMaxRange);
+                        System.out.print(" Min " + sdMinRange);
+                        System.out.print(" Num Groups " + numberOfGroups);
+                        System.out.println(" Grp Size " + grpSize);
+
+
+                        // adds the intervalLength starting from the MinRange until the max is reached
+                        int lowerBound = sdMinRange;
+                        int upperBound = 0;
+
+                        while (upperBound <= sdMaxRange && lowerBound <= (sdMaxRange-intervalLength)) {
+                            upperBound= (lowerBound + intervalLength);
+                            lowerBound += intervalLength;
+
+                           // adds to the frequency of the interval
+                            if ((dataItem <= upperBound) && (dataItem >= (upperBound - intervalLength))) {
+
+                                Data[upperBound] += 1;
+                                sdItems++;
+                                System.out.print("\n data item " + dataItem );
+                                System.out.print("\nFrequency " + upperBound+ ": " + Data[upperBound]);
+
+                            } else {
+                             //   upperBound += intervalLength;
+                              //  System.out.print("\n upperBound2" + upperBound);
+                            }
+
+                            // lowerBound2= upperBound+1;
+                            // upperBound2= lowerBound2 + interval length;
+                            //
+
+
+                            // for (int interval =0; interval < sdMaxRange; interval ++);
+
+                        } // print maxed reached or data read fully
+                         */
+
+                    }
+                    } else{
                         System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
                         sdItems = INVALID;
-                        error = true;
 
                         break;
 
                     }
 
+                    break;
 
-                    // if error = true than  break;
-                }// end while error=false loop
-                break;
-            }
-
-            case GROUPED: {
-            }
+            }// end case grouped
 
             default: {
                 sdItems = INVALID;
@@ -220,8 +321,9 @@ public class StDeviation {
                 break;
             }
         }// end switch (get calc method)
-    }// end while
     }// end method add new data item
+
+
 
 
 
@@ -232,7 +334,7 @@ public class StDeviation {
     //      Pre-Conditions:
 //          - none
 //
-    public int getNumberOfDataItems() {
+    int getNumberOfDataItems() {
 
         return sdItems;
     }
@@ -246,7 +348,7 @@ public class StDeviation {
 //          -at least one data has been added
 //          -calculation method has been set
 //
-    public double calcAverage() {
+    double calcAverage() {
 
         double total = 0;
 
@@ -285,6 +387,32 @@ public class StDeviation {
                 break;
 
                 case GROUPED:{
+                    /*
+                    x represents midpoint and f represents frequency
+                    average = sum of the midpoint times the frequency / sum of the frequency
+                     // (double) total represents the sum of all of the data values (variable i)divided by
+                    // their frequency (Data[i])
+
+                     */
+                    //In this example, you are using a continuous variable that has been rounded to the nearest integer.
+                    // The group of 10 to 14 is actually 9.5 to 14.499 (as the 9.5 would be rounded up to 10 and the 14.499
+                    // would be rounded down to 14).
+                    // The interval has a length of 5 but the midpoint is 12 (9.5 + 2.5 = 12).
+
+                    // change i to the midpoint of the two intervals
+
+                    int lowerBound = 0;
+                    int upperBound =0;
+                    int midpoint = (lowerBound + upperBound)/2;
+                    for (int i = sdMinRange; i <= sdMaxRange; i++) {
+                        total += (Data[midpoint]*i);
+
+
+                        // sets the average (sdAve) to the total divided by
+                        // sdItems (the sum of all frequencies in the array/ the number of data items in array)
+                        sdAve= total/ sdItems;
+                    }
+                    System.out.print("\n Average: " + sdAve);
 
                 }
                 break;
@@ -300,7 +428,7 @@ public class StDeviation {
         else {
             // Pre-Conditions have not been met; prints error message
             sdAve = INVALID;
-            System.out.println("ERROR: Invalid AVERAGE");
+            System.out.println("\nERROR: Invalid AVERAGE");
         }
 
         // returns the calculated average
@@ -318,7 +446,7 @@ public class StDeviation {
 //          - the average must have been calculated
 //          - calculation method is set
 
-    public double calcVariance(){
+    double calcVariance(){
 
         double total = 0;
         double difference = 0;
@@ -370,6 +498,11 @@ public class StDeviation {
                 }
 
                 case GROUPED: {
+                    // Note: During calculations, when a variable is grouped by class intervals, the midpoint of the
+                    // interval is used in place of every other value in the interval. Thus, the spread of
+                    // observations within each interval is ignored. This makes the standard deviation always less
+                    //than the true value. It should, therefore, be regarded as an approximation.
+
                     break;
                 }
 
@@ -402,7 +535,7 @@ public class StDeviation {
 //          - the variance must have been calculated
 //
 
-    public double calcStandardDeviation(){
+    double calcStandardDeviation(){
 
         // Checks that data entry, average, and variance have been done
         if ((sdItems != INVALID) || (sdAve != INVALID) || (sdVar != INVALID)) {
@@ -419,4 +552,5 @@ public class StDeviation {
     }
 
 }// end class
+
 
