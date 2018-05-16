@@ -128,16 +128,16 @@ public class StDeviation {
         //- the user input is a factor of the range
         // if the preconditions are not met sdGroupNumber is set to invalid
 
-       int range = (sdMaxRange-sdMinRange + 1);
-       if (userIn >= range || (range % userIn!=0)){
-           numberOfGroups = INVALID_RANGE;
-           grpSize = INVALID;
-       }
-       else {
+        int range = (sdMaxRange-sdMinRange + 1);
+        if (userIn >= range || (range % userIn!=0)){
+            numberOfGroups = INVALID_RANGE;
+            grpSize = INVALID;
+        }
+        else {
 
-           numberOfGroups = userIn;
-           grpSize = (range / userIn);
-       }
+            numberOfGroups = userIn;
+            grpSize = (range / userIn);
+        }
 
     }
     // when called upon this function will return the minimum range
@@ -160,7 +160,7 @@ public class StDeviation {
 
 
 
-        void addNewDataItem(int dataItem){
+    void addNewDataItem(int dataItem){
 
         // In this case we have to check if we are adding the first data item.
         // If sdItems = -1 then no data has been previously added so we set
@@ -190,41 +190,41 @@ public class StDeviation {
                 // if these conditions are not met an error message is displayed and sdItems is set to invalid
 
 
-                        if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
+                if ((getMin() != INVALID_RANGE) && (getMax() != INVALID_RANGE)) {
 
-                            if ((dataItem < getMin()) || (dataItem > getMax())) {
+                    if ((dataItem < getMin()) || (dataItem > getMax())) {
 
-                                System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
-                                        (double) dataItem, (double) getMin(), (double) getMax());
-
-
-
-                            } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
-
-                                System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
-                                        (double) dataItem, (double) MINDATA, (double) MAXDATA);
-
-                                sdItems = INVALID;
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0f ), User Values: Minimum ( %5.0f ), Maximum ( %5.0f )\n",
+                                (double) dataItem, (double) getMin(), (double) getMax());
 
 
 
-                            } else {
+                    } else if ((dataItem < MINDATA) || (dataItem >= MAXDATA)) {
 
-                                // if all conditions are satisfied then 1 is added to the frequency,
-                                // and the sum of the frequencies (sdItems)
+                        System.out.printf("ERROR: RANGE VIOLATION - Data Value ( %5.0 ), System Values: DATAMIN ( %5.0f ),DATAMAX ( %5.0f )\n",
+                                (double) dataItem, (double) MINDATA, (double) MAXDATA);
 
-                                Data[dataItem] = Data[dataItem] + 1;
-                                sdItems++;
+                        sdItems = INVALID;
 
-                            }
 
-                        } else {
-                            System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
-                            sdItems = INVALID;
 
-                            break;
+                    } else {
 
-                        }
+                        // if all conditions are satisfied then 1 is added to the frequency,
+                        // and the sum of the frequencies (sdItems)
+
+                        Data[dataItem] = Data[dataItem] + 1;
+                        sdItems++;
+
+                    }
+
+                } else {
+                    System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
+                    sdItems = INVALID;
+
+                    break;
+
+                }
 
 
                 break;
@@ -263,15 +263,15 @@ public class StDeviation {
 
 
                     }
-                    } else{
-                        System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
-                        sdItems = INVALID;
-
-                        break;
-
-                    }
+                } else{
+                    System.out.printf("ERROR: RANGE VIOLATION - Range values not set Data Value ( %5.0f \n", (double) dataItem);
+                    sdItems = INVALID;
 
                     break;
+
+                }
+
+                break;
 
             }// end case grouped
 
@@ -350,44 +350,48 @@ public class StDeviation {
 
                     // adds the intervalLength starting from the MinRange until the max is reached
                     int intervalLength = grpSize;
-                   double midpoint = 0;
+                    double midpoint = 0;
 
-                        for (int interval = sdMinRange; interval <= sdMaxRange; interval++) {
+                    for (int interval = sdMinRange; interval <= sdMaxRange; interval++) {
 
-                            interval += (grpSize - 1);
-                            midpoint = (interval + (interval- (grpSize-1))) / 2;
+                        interval += (grpSize - 1);
+                        midpoint = (interval + (interval- (grpSize-1))) / 2;
 
-                            // add the frequency of the values within the interval to the interval frequency
+                        // add the frequency of the values within the interval to the interval frequency
 
-                            for (int i= sdMinRange; i<= sdMaxRange; i++){
-
-
-                                // the ISSUE: when i = interval, the interval is beginning at Data[i] and adding itself
-                                if (( i <= interval) && (i >= (interval-(grpSize -1))) && i!= interval){
-                                    Data[interval] += Data[i];
+                        for (int i= sdMinRange; i<= sdMaxRange; i++){
 
 
-                                    System.out.print ("interval " + interval + "\n");
-                                    System.out.print("data item " + i);
-                                    System.out.print("\ndata freq " + Data[i]);
-                                    System.out.print("\nFrequency " + Data[interval] +  "\n");
-                                    System.out.print("midpoint" + midpoint + "\n\n");
-                                    // x represents midpoint and f represents frequency
-                                    // average = sum of the midpoint times the frequency / sum of the frequency
-
-                                    total += midpoint*(Data[interval]);
-
-                                }
+                            // the ISSUE: when i = interval, the interval is beginning at Data[i] and adding itself
+                            if (( i <= interval) && (i >= (interval-(grpSize -1))) && i!= interval){
+                                Data[interval] += Data[i];
 
 
-                                }
+                                System.out.print ("interval " + interval + "\n");
+                                System.out.print("data item " + i);
+                                System.out.print("\ndata freq " + Data[i]);
+                                System.out.print("\nFrequency " + Data[interval] +  "\n");
+                                System.out.print("midpoint" + midpoint + "\n\n");
+                                // x represents midpoint and f represents frequency
+                                // average = sum of the midpoint times the frequency / sum of the frequency
+
 
                             }
+
+
+
+
+                        }
+                        total += midpoint*(Data[interval]);
+                        System.out.print("total " + total + "\n");
+
+                    }
                     // sets the average (sdAve) to the total divided by
                     // sdItems (the sum of all frequencies in the array/ the number of data items in array)
 
                     sdAve= total/ sdItems;
-                        }
+                    System.out.print("Average grouped  " + sdAve);
+                }
 
 
                 break;
@@ -478,6 +482,23 @@ public class StDeviation {
                     // observations within each interval is ignored. This makes the standard deviation always less
                     //than the true value. It should, therefore, be regarded as an approximation.
 
+
+                    // loops over all data to calculate the variance
+                    for (int i = sdMinRange; i <= sdMaxRange; i++) {
+                        //
+                        // the variable 'difference' represents the sum of the data values subtracted by the mean.
+                        // variable 'diffSquared' calculates square of the difference
+                        // (double) total is product of sum of the diffSquared multiplied by
+                        // the frequency for each unique data value
+                        //
+                       // difference = (midpoint- sdAve);
+                       // diffSquared = Math.pow(difference,2);
+                      //  total += diffSquared * Data[interval];
+
+                    }
+                    // the variation (sdAve) is the quotient of the total divided by the sum of all frequencies
+                    sdVar= total / (double) sdItems;
+
                     break;
                 }
 
@@ -527,3 +548,4 @@ public class StDeviation {
     }
 
 }// end class
+
