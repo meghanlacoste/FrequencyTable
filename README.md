@@ -257,49 +257,10 @@ public class StDeviation {
                         Data[dataItem] = Data[dataItem] + 1;
                         sdItems++;
 
+
+
                         // do same thing as frq table then in calc average add the sums of the frequency between the intervals and find midpoint
 
-                       /* // preconditions met. The groups are created and one is
-
-                        int intervalLength = ((sdMaxRange - sdMinRange) + 1) / numberOfGroups;
-
-
-                        System.out.println ("\t\t\t\t\t\t\t\tMax " + sdMaxRange);
-                        System.out.print(" Min " + sdMinRange);
-                        System.out.print(" Num Groups " + numberOfGroups);
-                        System.out.println(" Grp Size " + grpSize);
-
-
-                        // adds the intervalLength starting from the MinRange until the max is reached
-                        int lowerBound = sdMinRange;
-                        int upperBound = 0;
-
-                        while (upperBound <= sdMaxRange && lowerBound <= (sdMaxRange-intervalLength)) {
-                            upperBound= (lowerBound + intervalLength);
-                            lowerBound += intervalLength;
-
-                           // adds to the frequency of the interval
-                            if ((dataItem <= upperBound) && (dataItem >= (upperBound - intervalLength))) {
-
-                                Data[upperBound] += 1;
-                                sdItems++;
-                                System.out.print("\n data item " + dataItem );
-                                System.out.print("\nFrequency " + upperBound+ ": " + Data[upperBound]);
-
-                            } else {
-                             //   upperBound += intervalLength;
-                              //  System.out.print("\n upperBound2" + upperBound);
-                            }
-
-                            // lowerBound2= upperBound+1;
-                            // upperBound2= lowerBound2 + interval length;
-                            //
-
-
-                            // for (int interval =0; interval < sdMaxRange; interval ++);
-
-                        } // print maxed reached or data read fully
-                         */
 
                     }
                     } else{
@@ -322,7 +283,6 @@ public class StDeviation {
             }
         }// end switch (get calc method)
     }// end method add new data item
-
 
 
 
@@ -387,34 +347,49 @@ public class StDeviation {
                 break;
 
                 case GROUPED:{
-                    /*
-                    x represents midpoint and f represents frequency
-                    average = sum of the midpoint times the frequency / sum of the frequency
-                     // (double) total represents the sum of all of the data values (variable i)divided by
-                    // their frequency (Data[i])
 
-                     */
-                    //In this example, you are using a continuous variable that has been rounded to the nearest integer.
-                    // The group of 10 to 14 is actually 9.5 to 14.499 (as the 9.5 would be rounded up to 10 and the 14.499
-                    // would be rounded down to 14).
-                    // The interval has a length of 5 but the midpoint is 12 (9.5 + 2.5 = 12).
+                    // adds the intervalLength starting from the MinRange until the max is reached
+                    int intervalLength = grpSize;
+                   double midpoint = 0;
 
-                    // change i to the midpoint of the two intervals
+                        for (int interval = sdMinRange; interval <= sdMaxRange; interval++) {
 
-                    int lowerBound = 0;
-                    int upperBound =0;
-                    int midpoint = (lowerBound + upperBound)/2;
-                    for (int i = sdMinRange; i <= sdMaxRange; i++) {
-                        total += (Data[midpoint]*i);
+                            interval += (grpSize - 1);
+                            midpoint = (interval + (interval- (grpSize-1))) / 2;
+
+                            // add the frequency of the values within the interval to the interval frequency
+
+                            for (int i= sdMinRange; i<= sdMaxRange; i++){
 
 
-                        // sets the average (sdAve) to the total divided by
-                        // sdItems (the sum of all frequencies in the array/ the number of data items in array)
-                        sdAve= total/ sdItems;
-                    }
-                    System.out.print("\n Average: " + sdAve);
+                                // the ISSUE: when i = interval, the interval is beginning at Data[i] and adding itself
+                                if (( i <= interval) && (i >= (interval-(grpSize -1))) && i!= interval){
+                                    Data[interval] += Data[i];
 
-                }
+
+                                    System.out.print ("interval " + interval + "\n");
+                                    System.out.print("data item " + i);
+                                    System.out.print("\ndata freq " + Data[i]);
+                                    System.out.print("\nFrequency " + Data[interval] +  "\n");
+                                    System.out.print("midpoint" + midpoint + "\n\n");
+                                    // x represents midpoint and f represents frequency
+                                    // average = sum of the midpoint times the frequency / sum of the frequency
+
+                                    total += midpoint*(Data[interval]);
+
+                                }
+
+
+                                }
+
+                            }
+                    // sets the average (sdAve) to the total divided by
+                    // sdItems (the sum of all frequencies in the array/ the number of data items in array)
+
+                    sdAve= total/ sdItems;
+                        }
+
+
                 break;
 
                 // If the Calc-method is invalid, the average is also set to invalid
@@ -552,5 +527,3 @@ public class StDeviation {
     }
 
 }// end class
-
-
