@@ -366,31 +366,18 @@ public class StDeviation {
                             if (( i <= interval) && (i >= (interval-(grpSize -1))) && i!= interval){
                                 Data[interval] += Data[i];
 
-
-                                System.out.print ("interval " + interval + "\n");
-                                System.out.print("data item " + i);
-                                System.out.print("\ndata freq " + Data[i]);
-                                System.out.print("\nFrequency " + Data[interval] +  "\n");
-                                System.out.print("midpoint" + midpoint + "\n\n");
-                                // x represents midpoint and f represents frequency
-                                // average = sum of the midpoint times the frequency / sum of the frequency
-
-
                             }
 
-
-
-
                         }
+                        // x represents midpoint and f represents frequency
+                        // average = sum of the midpoint times the frequency / sum of the frequency
                         total += midpoint*(Data[interval]);
-                        System.out.print("total " + total + "\n");
 
                     }
                     // sets the average (sdAve) to the total divided by
                     // sdItems (the sum of all frequencies in the array/ the number of data items in array)
 
                     sdAve= total/ sdItems;
-                    System.out.print("Average grouped  " + sdAve);
                 }
 
 
@@ -477,27 +464,30 @@ public class StDeviation {
                 }
 
                 case GROUPED: {
-                    // Note: During calculations, when a variable is grouped by class intervals, the midpoint of the
-                    // interval is used in place of every other value in the interval. Thus, the spread of
-                    // observations within each interval is ignored. This makes the standard deviation always less
-                    //than the true value. It should, therefore, be regarded as an approximation.
+                         // Note: During calculations, when a variable is grouped by class intervals, the midpoint of the
+                         // interval is used in place of every other value in the interval. Thus, the spread of
+                         // observations within each interval is ignored. This makes the standard deviation always less
+                          //than the true value. It should, therefore, be regarded as an approximation.
 
-
-                    // loops over all data to calculate the variance
-                    for (int i = sdMinRange; i <= sdMaxRange; i++) {
-                        //
-                        // the variable 'difference' represents the sum of the data values subtracted by the mean.
+                        // the variable 'difference' represents the sum of the mean subtracted from the midpoints.
                         // variable 'diffSquared' calculates square of the difference
                         // (double) total is product of sum of the diffSquared multiplied by
                         // the frequency for each unique data value
-                        //
-                       // difference = (midpoint- sdAve);
-                       // diffSquared = Math.pow(difference,2);
-                      //  total += diffSquared * Data[interval];
 
-                    }
-                    // the variation (sdAve) is the quotient of the total divided by the sum of all frequencies
-                    sdVar= total / (double) sdItems;
+                        int midpoint = 0;
+
+                        for (int interval = sdMinRange; interval <= sdMaxRange; interval++) {
+
+                            interval += (grpSize - 1);
+                            midpoint = (interval + (interval - (grpSize - 1))) / 2;
+                            difference = (midpoint - sdAve);
+                            diffSquared = Math.pow(difference, 2);
+                            total += diffSquared * Data[interval];
+
+                        }
+                        // the variation (sdAve) is the quotient of the total divided by the sum of all frequencies
+
+                        sdVar = total / (double) sdItems;
 
                     break;
                 }
@@ -548,4 +538,3 @@ public class StDeviation {
     }
 
 }// end class
-
